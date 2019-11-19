@@ -1,0 +1,23 @@
+PROGRAM testeproc1;
+VAR
+X, y, z :INTEGER;
+PROCEDURE P;
+VAR
+A :INTEGER;
+BEGIN
+READLN(a);
+IF a=x THEN
+z:=z+x
+ELSE BEGIN
+Z:=z-x;
+CALL p;
+END;
+END;
+BEGINZ:=0;
+READLN(x,y);
+IF x>y THEN
+CALL p
+ELSE
+Z:=z+x+y;
+WRITELN(z);
+END.
