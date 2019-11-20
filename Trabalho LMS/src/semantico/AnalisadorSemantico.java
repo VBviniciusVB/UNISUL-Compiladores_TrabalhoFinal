@@ -7,9 +7,6 @@ import sintatico.Pilha;
 import tabeladesimbolos.Simbolo;
 import tabeladesimbolos.Tabela;
 
-//Necessita quando abre pelo Intelij
-
-
 public class AnalisadorSemantico {
 
     public static String ultimo = "Ultimo";
@@ -25,6 +22,8 @@ public class AnalisadorSemantico {
     private static String nome_atribuicao_esquerda = "";
     private static String nomeProcedimento = "";
     private static int npe = 0;
+    private static String contexto;
+    private static int forEndNome = 0;
 
     static int nivel_atual;
     static int Pt_livre;
@@ -36,7 +35,7 @@ public class AnalisadorSemantico {
     
     static String tipo_identificador;
 
-    //Inicializa Pilha
+    //Inicializa Pilha ???
     ArrayList<Pilha> ifs = new ArrayList<Pilha>();
     ArrayList<Pilha> whiles = new ArrayList<Pilha>();
     ArrayList<Pilha> repeat = new ArrayList<Pilha>();
@@ -44,8 +43,7 @@ public class AnalisadorSemantico {
     ArrayList<Pilha> cases = new ArrayList<Pilha>();
     ArrayList<Pilha> fors = new ArrayList<Pilha>();
     
-    //Inicializa Instruções da máquina hipotética
-    public static ArrayList<String> instrucoes = new ArrayList<String>();
+    //Inicializa Instruções da máquina hipotética ???
     public static AreaInstrucoes AI = new AreaInstrucoes();
     public static AreaLiterais AL = new AreaLiterais();
     
@@ -54,16 +52,13 @@ public class AnalisadorSemantico {
         switch (Numero) {
             case 100:
 
-            	//Inicia a pilha 
-            	instrucoes.clear();
-            	
             	//Inicializa Instruções e Literais na Hipotetica
             	MaquinaHipotetica.InicializaAI(AI);
             	MaquinaHipotetica.InicializaAL(AL);
-            	
+
             	//Tabela de Símbolos
             	Tabela tabela = new Tabela();
-            	
+
                 nivel_atual = 0;
                 Pt_livre = 1;
                 escopo[0] = 1;
@@ -76,13 +71,14 @@ public class AnalisadorSemantico {
             case 101:
 
                 //Hipotetica.IncluirAI(null, 26, 0, 0);
-//                this.maquinaHipotetica.incluir(this.areaInstrucoes, 26, 0, 0);
+//              //this.maquinaHipotetica.incluir(this.areaInstrucoes, 26, 0, 0);
+
 //                for (int i = 0; i < this.tabelaSimbolos.getTabela().length; i++) {
 //                    if ((this.tabelaSimbolos.getTabela()[i][0] != null) && (this.tabelaSimbolos.getTabela()[i][1].equals("rótulo"))){
 //                        if (this.tabelaSimbolos.getTabela()[i][4].equals(""))
 //                            break;
-//                        this.erro = "Erro semântico";
-//                        msgRetornoSemantico = "Erro semântico";
+//
+//                        System.out.println("Erro semântico");
 //
 //                        break;
 //                    }
@@ -90,14 +86,10 @@ public class AnalisadorSemantico {
 //                }
 
 
-            	instrucoes.add("PARA");
-
 
 
                 break;
             case 102:
-
-            	instrucoes.add("AMEM");
 
                 MaquinaHipotetica.IncluirAI(AI, 24, 0, acaoAcumulada);
 
@@ -113,42 +105,42 @@ public class AnalisadorSemantico {
 
                 acaoAcumulada += 1;
 
-                Simbolo simbolo1 = new Simbolo();
-                simbolo1.setNome(penultimo+"");
-                simbolo1.setCategoria("variável");
-                simbolo1.setNivel(nivel_atual+"");
-                simbolo1.setGeralA(deslocamento+"");
-                simbolo1.setGeralB("");
-                simbolo1.setProximo(null);
+                Simbolo Table104 = new Simbolo();
+                Table104.setNome(penultimo+"");
+                Table104.setCategoria("variável");
+                Table104.setNivel(nivel_atual+"");
+                Table104.setGeralA(deslocamento+"");
+                Table104.setGeralB("");
+                Table104.setProximo(null);
 
             	if (tipo_identificador.equals("rótulo")) {
-                    if (Tabela.buscar(simbolo1) == null) {
+                    if (Tabela.buscar(Table104) == null) {
 
-                        int nivel = Integer.parseInt((Tabela.buscar(simbolo1)).getNivel()) ;
+                        int nivel = Integer.parseInt((Tabela.buscar(Table104)).getNivel()) ;
                         if (nivel == nivel_atual) {
                             System.out.println("Erro semântico : Rótulo já declarado no mesmo nível");
                         }
                         else{
-                            simbolo1.setCategoria("rótulo");
-                            simbolo1.setGeralA("0");
+                            Table104.setCategoria("rótulo");
+                            Table104.setGeralA("0");
 
-                            Tabela.adiciona(simbolo1);
+                            Tabela.adiciona(Table104);
                         }
 
                     } else {
-                        simbolo1.setCategoria("rótulo");
-                        simbolo1.setGeralA("0");
+                        Table104.setCategoria("rótulo");
+                        Table104.setGeralA("0");
 
-                        Tabela.adiciona(simbolo1);
+                        Tabela.adiciona(Table104);
                     }
-            		
+
             	}
 
 
             	if (tipo_identificador.equals("variável")) {
-                    if (Tabela.buscar(simbolo1) == null) {
+                    if (Tabela.buscar(Table104) == null) {
 
-                        Tabela.adiciona(simbolo1);
+                        Tabela.adiciona(Table104);
                         deslocamento += 1;
                         nv += 1;
 
@@ -157,19 +149,19 @@ public class AnalisadorSemantico {
                     }
 
             	}
-            	
+
             	if (tipo_identificador.equals("parâmetro")) {
 
-                    simbolo1.setCategoria("parâmetro");
-                    simbolo1.setGeralA("");
+                    Table104.setCategoria("parâmetro");
+                    Table104.setGeralA("");
 
-                    if (Tabela.buscar(simbolo1) == null) {
-                        int nivel = Integer.parseInt((Tabela.buscar(simbolo1)).getNivel()) ;
+                    if (Tabela.buscar(Table104) == null) {
+                        int nivel = Integer.parseInt((Tabela.buscar(Table104)).getNivel()) ;
                         if (nivel == nivel_atual) {
                             System.out.println("Erro semântico\nParâmetro já declarado no mesmo nível");
                         } else {
 
-                            Tabela.adiciona(simbolo1);
+                            Tabela.adiciona(Table104);
 
                             //this.parametros.insereElemento(this.tabelaSimbolos.buscar(this.penultimo));
 
@@ -177,7 +169,7 @@ public class AnalisadorSemantico {
                         }
                     } else {
 
-                        Tabela.adiciona(simbolo1);
+                        Tabela.adiciona(Table104);
 
                         //this.parametros.insereElemento(this.tabelaSimbolos.buscar(this.penultimo));
 
@@ -185,25 +177,25 @@ public class AnalisadorSemantico {
                     }
 
             	}
-            	
+
                 break;
             case 105:
 
-                Simbolo simbolo2 = new Simbolo();
-                simbolo2.setNome(penultimo+"");
-                simbolo2.setCategoria("constante");
-                simbolo2.setNivel(nivel_atual+"");
-                simbolo2.setGeralA("0");
-                simbolo2.setGeralB("0");
-                simbolo2.setProximo(null);
+                Simbolo Table105 = new Simbolo();
+                Table105.setNome(penultimo+"");
+                Table105.setCategoria("constante");
+                Table105.setNivel(nivel_atual+"");
+                Table105.setGeralA("0");
+                Table105.setGeralB("0");
+                Table105.setProximo(null);
 
-                if (Tabela.buscar (simbolo2) == null) {
+                if (Tabela.buscar (Table105) == null) {
                     System.out.println("Erro semântico = Constante já foi declarada");
                 } else {
 
-                    Tabela.adiciona(simbolo2);
+                    Tabela.adiciona(Table105);
 
-                    end_ident = Integer.parseInt(Tabela.buscar(simbolo2).getNivel());
+                    end_ident = Integer.parseInt(Tabela.buscar(Table105).getNivel());
                 }
 
                 break;
@@ -225,13 +217,13 @@ public class AnalisadorSemantico {
                 deslocamento = 3;
                 nomePro = penultimo;
 
-                Simbolo simbolo3 = new Simbolo();
-                simbolo3.setNome(penultimo+"");
-                simbolo3.setCategoria("procedure");
-                simbolo3.setNivel(nivel_atual+"");
-                simbolo3.setGeralA(AreaInstrucoes.LC + 1 + "");
-                simbolo3.setGeralB("0");
-                simbolo3.setProximo(null);
+                Simbolo Table108 = new Simbolo();
+                Table108.setNome(penultimo+"");
+                Table108.setCategoria("procedure");
+                Table108.setNivel(nivel_atual+"");
+                Table108.setGeralA(AreaInstrucoes.LC + 1 + "");
+                Table108.setGeralB("0");
+                Table108.setProximo(null);
 
                 possuiParametro(false);
                 //this.parametros.insereElemento(this.tabelaSimbolos.buscar(this.penultimo));
@@ -242,11 +234,11 @@ public class AnalisadorSemantico {
             case 109:
                 if (np > 0) {
 
-                    Simbolo simbolo109 = new Simbolo();
-                    simbolo109.setNome(nomePro+"");
+                    Simbolo Table109 = new Simbolo();
+                    Table109.setNome(nomePro+"");
 
                     Simbolo table = new Simbolo();
-                    table = Tabela.buscar (simbolo109);
+                    table = Tabela.buscar (Table109);
 
                     //String[][] tabelaSimbolo2 = this.tabelaSimbolos.getTabela();
                     //tabelaSimbolo2[this.tabelaSimbolos.buscar(this.nomePro)][4] = this.np+"";
@@ -266,16 +258,15 @@ public class AnalisadorSemantico {
 
                 break;
             case 110:
-            	instrucoes.add("RETU");
 
                 procedures.remove(procedures.size());
 
                 //MaquinaHipotetica.IncluirAI(AreaInstrucoes, 1, 0, np+1);
                 //instrucoes.insereInstrucao(1, 0, this.np + 1);
 
-                Simbolo simbolo4 = new Simbolo();
-                simbolo4.setNome("Busca");
-                simbolo4.setCategoria("rótulo");
+                Simbolo Table110 = new Simbolo();
+                Table110.setNome("Busca");
+                Table110.setCategoria("rótulo");
 
 //                for (int i = 0; i < tabelaSimbolos.getTabela().procedures.size(); i++) {
 //                    if ((this.tabelaSimbolos.getTabela()[i][0] != null) &&
@@ -298,21 +289,28 @@ public class AnalisadorSemantico {
                 break;
             case 112:
                 nomeIdentificador = penultimo;
-            	
+
             	break;
             case 113:
 
                 nomeIdentificador = penultimo;
 
-                Simbolo simbolo5 = new Simbolo();
-                simbolo5.setNome(penultimo+"");
+                Simbolo Table113 = new Simbolo();
+                Table113.setNome(penultimo+"");
+                Table113 = Tabela.buscar(Table113);
 
+                if (Table113 != null) {
+                    if (Table113.getCategoria().equals("rótulo")) {
+                        if (!Table113.getNivel().equals(nivel_atual)) {
+                            System.out.println("Erro semântico: rótulo não está no escopo");
+                        } else {
 
-                if (Tabela.buscar(simbolo5) == null) {
-//                    if (this.tabelaSimbolos.getTabela()[this.tabelaSimbolos.buscar(this.nomeIdentificador)][1].equals("rótulo")) {
-//                        if (!this.tabelaSimbolos.getTabela()[this.tabelaSimbolos.buscar(this.nomeIdentificador)][2].equals(this.nivelAtual)) {
-//                            msgRetornoSemantico = "Erro semântico\nRótulo não está no escopo";
-//                        } else {
+                            Simbolo Table113_2 = new Simbolo();
+                            Table113_2.setNome(nomeIdentificador+"");
+                            Table113_2 = Tabela.buscar(Table113_2);
+
+                            //Fazer aqui
+
 //                            String[][] tabelaSimbolo3 = this.tabelaSimbolos.getTabela();
 //
 //                            tabelaSimbolo3[this.tabelaSimbolos.buscar(this.nomeIdentificador)][3] = this.areaInstrucoes.LC+"";
@@ -346,28 +344,27 @@ public class AnalisadorSemantico {
 //                            tabelaSimbolo3[this.tabelaSimbolos.buscar(this.nomeIdentificador)][4] = "";
 //
 //                            this.tabelaSimbolos.setTabela(tabelaSimbolo3);
-//                        }
-//                    }
-//                    else
-//                        this.erro = "Erro semântico: rótulo não está declarado";
+                        }
+                    }
+                    else
+                        System.out.println("Erro semântico: rótulo não está declarado");
                 }
                 else {
                     System.out.println("Erro semântico: rótulo não está declarado");
                 }
-            	
+
             	break;
             case 114:
 
                 nomeIdentificador = penultimo;
 
-                Simbolo simbolo6 = new Simbolo();
-                simbolo6.setNome(penultimo+"");
+                Simbolo Table114 = new Simbolo();
+                Table114.setNome(penultimo+"");
 
-                Simbolo Table = new Simbolo();
-                Table = Tabela.buscar(simbolo6);
+                Table114 = Tabela.buscar(Table114);
 
-                if (Tabela.buscar(simbolo6) == null) {
-                    if (Table.getNome().equals("variável")){
+                if (Tabela.buscar(Table114) == null) {
+                    if (Table114.getNome().equals("variável")){
                         System.out.println("Erro semântico: atribuição da parte esquerda inválida");
                     } else {
                         nome_atribuicao_esquerda = nomeIdentificador;
@@ -379,7 +376,6 @@ public class AnalisadorSemantico {
 
                 break;
             case 115:
-            	instrucoes.add("ARMZ");
 
                 nomeIdentificador = penultimo;
 
@@ -405,10 +401,9 @@ public class AnalisadorSemantico {
                         nomeProcedimento = penultimo;
                     }
                 }
-            	
+
             	break;
             case 117:
-            	instrucoes.add("CALL");
 
                 nomeProcedimento = nomePro;
 
@@ -426,15 +421,14 @@ public class AnalisadorSemantico {
 
 
 
-            	
+
             	break;
             case 118:
 
                 npe += 1;
-            	
+
             	break;
             case 119:
-            	instrucoes.add("DSVS");
 
                 Simbolo Table119 = new Simbolo();
                 Table119.setNome(penultimo+"");
@@ -471,59 +465,100 @@ public class AnalisadorSemantico {
                     }
                 }
 
-            	
+
             	break;
             case 120:
-            	instrucoes.add("DSVF");
-            	
+
             	break;
             case 121:
-            	
-            	
+
+
             	break;
             case 122:
-            	
-            	
+
+
             	break;
             case 123:
-            	
-            	
+
+
             	break;
             case 124:
-            	
-            	
+
+
             	break;
             case 125:
-            	
-            	
+
+
             	break;
             case 126:
-            	
-            	
+
+
             	break;
             case 127:
-            	
-            	
+
+
             	break;
             case 128:
-            	instrucoes.add("READLN");
-            	
+
+                contexto = "readln";
+
             	break;
             case 129:
-//            	instrucoes.add("LEIT");
-//            	instrucoes.add("ARMZ");
-            	
+
+                Simbolo Table129 = new Simbolo();
+                Table129.setNome(penultimo+"");
+                Table129 = Tabela.buscar(Table129);
+
+                if (Table129 == null)
+                    {
+
+                        System.out.println("Erro semântico: identificador \""+penultimo+"\" não está declarado");
+                    }else{
+
+                        int d_nivel2 = nivel_atual - Integer.parseInt(Table129.getNivel());
+
+                    if (contexto.equals("readln")) {
+
+                        if (Table129.getCategoria().equals("variável")) {
+                            //this.instrucoes.insereInstrucao(21, 0, 0);
+                            //this.maquinaHipotetica.incluir(this.areaInstrucoes, 21, 0, 0);
+                            //this.instrucoes.insereInstrucao(4, d_nivel2, Integer.parseInt(this.tabelaSimbolos.getTabela()[this.tabelaSimbolos.buscar(this.penultimo)][3]));
+                            //this.maquinaHipotetica.incluir(this.areaInstrucoes, 4, d_nivel2, Integer.parseInt(this.tabelaSimbolos.getTabela()[this.tabelaSimbolos.buscar(this.penultimo)][3]));
+                        }
+                        else {
+                            System.out.println("Erro semântico: identificador \""+penultimo+"\" não é uma variável");
+                        }
+                    }
+
+                    if (contexto.equals("expressão"))
+                    {
+
+                        if (Table129.getCategoria().equals("procedure") || (Table129.getCategoria().equals("rótulo")))
+                        {
+                            System.out.println("Erro semântico: identificador \""+penultimo+"\" não é uma constante");
+                        }
+                        else if (Table129.getCategoria().equals("constante")) {
+                            //this.instrucoes.insereInstrucao(3, 0, Integer.parseInt(this.tabelaSimbolos.getTabela()[this.tabelaSimbolos.buscar(this.penultimo)][3]));
+                            //this.maquinaHipotetica.incluir(this.areaInstrucoes, 3, 0, Integer.parseInt(this.tabelaSimbolos.getTabela()[this.tabelaSimbolos.buscar(this.penultimo)][3]));
+                        } else {
+                            //this.instrucoes.insereInstrucao(2, d_nivel2, Integer.parseInt(this.tabelaSimbolos.getTabela()[this.tabelaSimbolos.buscar(this.penultimo)][3]));
+                            //this.maquinaHipotetica.incluir(this.areaInstrucoes, 2, d_nivel2, Integer.parseInt(this.tabelaSimbolos.getTabela()[this.tabelaSimbolos.buscar(this.penultimo)][3]));
+                        }
+
+                    }
+
+                }
+
             	break;
             case 130:
-            	instrucoes.add("WRITELN");
             	
             	break;
             case 131:
-            	instrucoes.add("IMPR");
             	
             	break;
             case 132:
-            	
+
+                //Acopla mecanismo de controle de inicio de CASE junto à pilha de controle de CASE
             	
             	break;
             case 133:
@@ -531,9 +566,6 @@ public class AnalisadorSemantico {
             	
             	break;
             case 134:
-//            	instrucoes.add("COPIA");
-//            	instrucoes.add("CRCT");
-//            	instrucoes.add("CMIG");
             	
             	break;
             case 135:
@@ -541,15 +573,23 @@ public class AnalisadorSemantico {
             	
             	break;
             case 136:
-//            	instrucoes.add("COPIA");
-//            	instrucoes.add("CRCT");
-//            	instrucoes.add("CMIG");
-//            	instrucoes.add("DSVT");
             	
             	break;
             case 137:
-            	
-            	
+
+                Simbolo Table137 = new Simbolo();
+                Table137.setNome(penultimo+"");
+                Table137 = Tabela.buscar(Table137);
+
+                if ((Table137 != null)  && (Table137.getCategoria().equals("variável"))) {
+
+                    // Precisa salvar o "endereço do nome em relação a TS"
+                    //forEndNome = this.tabelaSimbolos.buscar(this.penultimo);
+                }
+                else {
+                    System.out.println("Erro semântico: variável \""+penultimo+"\" não declarada");
+                }
+
             	break;
             case 138:
             	
@@ -624,8 +664,9 @@ public class AnalisadorSemantico {
             	
             	break;
             case 156:
-            	
-            	
+
+                contexto = "expressão";
+
             	break;
         }
 
