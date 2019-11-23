@@ -1117,7 +1117,7 @@ public class ControllerMain {
 
 		} while (!symbols.pilhaVazia() || C < 1000);
 		
-		System.out.println(AnalisadorSemantico.instrucoes);
+
 		
 		//
 		//
