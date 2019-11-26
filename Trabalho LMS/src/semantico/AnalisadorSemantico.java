@@ -210,9 +210,16 @@ public class AnalisadorSemantico {
                 break;
             case 106:
 
-                //String[][] tabelaSimbolo = this.tabelaSimbolos.getTabela();
-                //tabelaSimbolo[this.end_ident][3] = this.penultimo;
-                //this.tabelaSimbolos.setTabela(tabelaSimbolo);
+                Simbolo Table106 = new Simbolo();
+                Table106.setNome(end_ident+"");
+                Table106 = Tabela.buscar (Table106);
+
+                Simbolo Table106_2 = new Simbolo();
+                Table106_2 = Table106;
+
+                Table106_2.setGeralA(penultimo);
+
+                Tabela.atualizar(Table106,Table106_2);
 
                 break;
             case 107:
@@ -230,14 +237,15 @@ public class AnalisadorSemantico {
                 Table108.setNome(penultimo+"");
                 Table108.setCategoria("procedure");
                 Table108.setNivel(nivel_atual+"");
-                //Table108.setGeralA((Instrucao.LC + 1) + "");
+                // Instrução LC esta inicializando vazia, verificar o que pode ser
+                Table108.setGeralA((Instrucao.LC + 1) + "");
                 Table108.setGeralA("0");
                 Table108.setGeralB("0");
                 Table108.setProximo(null);
 
                 possuiParametro(false);
 
-                //parametros.add(???);
+                //o que é adicionado como parâmetro aki ???
                 //this.parametros.insereElemento(this.tabelaSimbolos.buscar(this.penultimo));
 
                 nivel_atual += 1;
@@ -249,18 +257,23 @@ public class AnalisadorSemantico {
 
                     Simbolo Table109 = new Simbolo();
                     Table109.setNome(nomePro+"");
+                    Table109 = Tabela.buscar (Table109);
 
-                    Simbolo table = new Simbolo();
-                    table = Tabela.buscar (Table109);
+                    Simbolo Table109_2 = new Simbolo();
+                    Table109_2 = Table109;
 
-                    //String[][] tabelaSimbolo2 = this.tabelaSimbolos.getTabela();
-                    //tabelaSimbolo2[this.tabelaSimbolos.buscar(this.nomePro)][4] = this.np+"";
-                    //for (int i = 0; i < this.np; i++) {
+                    Table109_2.setGeralB(np+"");
+
+
+                    for (int i = 0; i < np; i++) {
                     //    tabelaSimbolo2[this.parametros.topo()][3] = (-(this.np - i)+"");
+                          //Table109_2.setGeralA(-(np - i)+"");
 
-                    //    this.parametros.tiraElemento();
-                    //}
-                    //this.tabelaSimbolos.setTabela(tabelaSimbolo2);
+                          parametros.remove(parametros.size() - 1);
+                    }
+
+                    Tabela.atualizar(Table109,Table109_2);
+
                 }
 
                 MaquinaHipotetica.IncluirAI(AI, 19, 0, 0);
@@ -351,9 +364,8 @@ public class AnalisadorSemantico {
 
                             Table113_2.setGeralA("");
 
-                            // mudar na tabela de símbolos
+                            Tabela.atualizar(Table113,Table113_2);
 
-                            //Table113_2.setTabela(tabelaSimbolo3);
                         }
                     }
                     else
@@ -455,9 +467,6 @@ public class AnalisadorSemantico {
                     if (Table119.getNivel().equals(nivel_atual)) {
                         System.out.println("Erro semântico: o rótulo não está declarado no escopo do nível");
                     } else {
-
-                        // Não sei se é o GeralB por isso deixei isso aki ainda
-                        //int op2 = Integer.parseInt(this.tabelaSimbolos.getTabela()[this.tabelaSimbolos.buscar(this.penultimo)][3]);
 
                         int op2 = Integer.parseInt(Table119.getGeralB());
 

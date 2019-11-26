@@ -92,8 +92,8 @@ public class Tabela {
         }
     }
 
-    public void atualizar(Simbolo simbolo, Simbolo novoSimbolo) {
-        int index = this.hash(simbolo.getNome(), tableSize);
+    public static void atualizar(Simbolo simbolo, Simbolo novoSimbolo) {
+        int index = hash(simbolo.getNome(), tableSize);
         if (hashtable[index] != null) {
             Simbolo atual = hashtable[index];
             if (atual == simbolo && !hasProximo(atual)) {
