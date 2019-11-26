@@ -77,7 +77,7 @@ public class Tabela {
         Simbolo busca = hashtable[index];
 
         if (busca == null) {
-
+            System.out.println("Buscar : Não foi encontrado o Símbolo \" " + simbolo.getNome());
             return null;
         }
 
