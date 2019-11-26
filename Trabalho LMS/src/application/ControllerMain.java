@@ -1136,11 +1136,10 @@ public class ControllerMain {
 		// Semântico
 		//
 		//
-		
-
-		System.out.println("Mostrando :" + AnalisadorSemantico.SalvaParaMostrarTabelaSemantica.get(0));
 
 		AdicionaTabelaSemantico();
+
+		AdicionaTabelaIntermediaria();
 		
 	}
 
@@ -1148,13 +1147,6 @@ public class ControllerMain {
 
 	@FXML
 	private void AdicionaTabelaSemantico () {
-
-		// Inicializar
-		// Adicionar
-		// Deletar
-		// Buscar
-		// Atualização
-
 
 		TabelaSemanticoNome.setCellValueFactory(
 				new PropertyValueFactory<>("nome"));
@@ -1174,6 +1166,28 @@ public class ControllerMain {
 		Tabela2.add(new TabelaSemantico("1","2","3","4","5","6","7"));
 
 		TabelaSemantico.setItems(Tabela2);
+
+	}
+
+	// - - -
+
+	@FXML
+	private void AdicionaTabelaIntermediaria () {
+
+		TabelaIntermediariaNumero.setCellValueFactory(
+				new PropertyValueFactory<>("numero"));
+		TabelaIntermediariaCategoria.setCellValueFactory(
+				new PropertyValueFactory<>("categoria"));
+		TabelaIntermediariaA.setCellValueFactory(
+				new PropertyValueFactory<>("a"));
+		TabelaIntermediariaB.setCellValueFactory(
+				new PropertyValueFactory<>("b"));
+
+		ObservableList<TabelaIntermediaria> Tabela3 = FXCollections.observableArrayList();
+
+		Tabela3.add(new TabelaIntermediaria("1","2","3","4"));
+
+		TabelaIntermediaria.setItems(Tabela3);
 
 	}
 
@@ -1403,11 +1417,11 @@ public class ControllerMain {
 
 		// ---
 
-		public SimpleStringProperty getId() {
+		public SimpleStringProperty getNumero() {
 			return numero;
 		}
 
-		public SimpleStringProperty idProperty() {
+		public SimpleStringProperty numeroProperty() {
 			return numero;
 		}
 
