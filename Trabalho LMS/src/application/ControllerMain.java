@@ -89,6 +89,23 @@ public class ControllerMain {
 
 	@FXML
 	private TableColumn<TabelaSemantico,String> TabelaSemanticoProximo;
+
+	// Tabela Intermediaria
+
+	@FXML
+	private TableView<TabelaIntermediaria> TabelaIntermediaria;
+
+	@FXML
+	private TableColumn<TabelaIntermediaria,String> TabelaIntermediariaNumero;
+
+	@FXML
+	private TableColumn<TabelaIntermediaria,String> TabelaIntermediariaCategoria;
+
+	@FXML
+	private TableColumn<TabelaIntermediaria,String> TabelaIntermediariaA;
+
+	@FXML
+	private TableColumn<TabelaIntermediaria,String> TabelaIntermediariaB;
 	
 	//
 	//Label dos Simbolos
@@ -988,25 +1005,21 @@ public class ControllerMain {
 
 		int TAMANHO = 0;
 
-		ObservableList<Tabela> Test = FXCollections.observableArrayList();
+		ObservableList<Tabela> Tabela1 = FXCollections.observableArrayList();
 		for (int i=0;i<Lexico.size();i++) {
 			TAMANHO++;
 			LexicoToken.add(TAMANHO);
-			Test.add(new Tabela(LexicoToken.get(i)+"",LexicoCodigo.get(i),LexicoLinha.get(i),LexicoID.get(i)+"",Lexico.get(i)));
+			Tabela1.add(new Tabela(LexicoToken.get(i)+"",LexicoCodigo.get(i),LexicoLinha.get(i),LexicoID.get(i)+"",Lexico.get(i)));
 
 		}
 
-		TabelaToken.setItems(Test);
+		TabelaToken.setItems(Tabela1);
 
 	}
 
 	@FXML 
 	private void ButtonSintatico(MouseEvent event)
 	{
-
-		// Adicionar o Semântico a execução do Sintático
-		ButtonSemantico(null);
-		//
 
 		System.out.print("Sintático : ");
 
@@ -1125,15 +1138,16 @@ public class ControllerMain {
 		//
 		
 
-		System.out.println( AnalisadorSemantico.SalvaParaMostrarTabelaSemantica.get(1));
+		System.out.println("Mostrando :" + AnalisadorSemantico.SalvaParaMostrarTabelaSemantica.get(0));
 
+		AdicionaTabelaSemantico();
 		
 	}
 
 
 
 	@FXML
-	private void ButtonSemantico (MouseEvent event) {
+	private void AdicionaTabelaSemantico () {
 
 		// Inicializar
 		// Adicionar
@@ -1155,39 +1169,13 @@ public class ControllerMain {
 		TabelaSemanticoProximo.setCellValueFactory(
 				new PropertyValueFactory<>("proximo"));
 
+		ObservableList<TabelaSemantico> Tabela2 = FXCollections.observableArrayList();
 
+		Tabela2.add(new TabelaSemantico("1","2","3","4","5","6","7"));
 
-		
-
-		//Test2.add(new TabelaSemantico("1","2","3","4","5","6","7"));
-		//Test2.add(new TabelaSemantico("1","2","3","4","5","6","7"));
-		//Test2.add(new TabelaSemantico("1","2","3","4","5","6","7"));
+		TabelaSemantico.setItems(Tabela2);
 
 	}
-
-	// ---
-
-	@FXML
-	private void ButtonSemanticoAlterar (MouseEvent event) {
-
-		// Código para alterar algo no semântico
-
-	}
-
-	@FXML
-	private void ButtonSemanticoExcluir (MouseEvent event) {
-
-		// Código para excluir algo no semântico
-
-	}
-
-	@FXML
-	private void ButtonSemanticoBuscar (MouseEvent event) {
-
-		// Código para buscar algo no semântico
-
-	}
-
 
 	// ---
 
@@ -1393,6 +1381,65 @@ public class ControllerMain {
 		//		public void setToken(String token) {
 		//			this.token.set(token);
 		//		}
+
+	}
+
+	//
+	// Definindo a Tabela Semantica
+	//
+
+	public static class TabelaIntermediaria {
+		private final SimpleStringProperty numero;
+		private final SimpleStringProperty categoria;
+		private final SimpleStringProperty a;
+		private final SimpleStringProperty b;
+
+		public TabelaIntermediaria(String numero, String categoria, String a, String b) {
+			this.numero = new SimpleStringProperty(numero);
+			this.categoria = new SimpleStringProperty(categoria);
+			this.a = new SimpleStringProperty(a);
+			this.b = new SimpleStringProperty(b);
+		}
+
+		// ---
+
+		public SimpleStringProperty getId() {
+			return numero;
+		}
+
+		public SimpleStringProperty idProperty() {
+			return numero;
+		}
+
+		// ---
+
+		public SimpleStringProperty getCategoria() {
+			return categoria;
+		}
+
+		public SimpleStringProperty categoriaProperty() {
+			return categoria;
+		}
+
+		// ---
+
+		public SimpleStringProperty getA() {
+			return a;
+		}
+
+		public SimpleStringProperty aProperty() {
+			return a;
+		}
+
+		// ---
+
+		public SimpleStringProperty getB() {
+			return b;
+		}
+
+		public SimpleStringProperty bProperty() {
+			return b;
+		}
 
 	}
 
