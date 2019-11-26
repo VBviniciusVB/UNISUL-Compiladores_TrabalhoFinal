@@ -2,8 +2,6 @@ package semantico;
 
 import java.util.ArrayList;
 
-import application.ControllerMain;
-import sintatico.Pilha;
 import tabeladesimbolos.Simbolo;
 import tabeladesimbolos.Tabela;
 
@@ -11,10 +9,11 @@ public class AnalisadorSemantico {
 
     public static String ultimo = "Ultimo";
     public static String penultimo = "Penultimo";
+    private static String antepenultimo;
     private static int acaoAcumulada = 3;
-    private static AreaInstrucoes AreaInstrucoes;
+    private static AreaInstrucoes Instrucao;
     public static Hipotetica MaquinaHipotetica;
-    public static AreaLiterais areaLiterais;
+    public static AreaLiterais Literal;
     private static int end_ident = 0;
     private static int np;
     private static String nomePro = "";
@@ -36,14 +35,18 @@ public class AnalisadorSemantico {
     static String tipo_identificador;
 
     //Inicializa Pilha ???
-    ArrayList<Pilha> ifs = new ArrayList<Pilha>();
-    ArrayList<Pilha> whiles = new ArrayList<Pilha>();
-    ArrayList<Pilha> repeat = new ArrayList<Pilha>();
-    public static ArrayList<Pilha> procedures = new ArrayList<Pilha>();
-    ArrayList<Pilha> cases = new ArrayList<Pilha>();
-    ArrayList<Pilha> fors = new ArrayList<Pilha>();
+    public static ArrayList<Integer> ifs = new ArrayList<Integer>();
+    public static ArrayList<Integer> whiles = new ArrayList<Integer>();
+    public static ArrayList<Integer> repeats = new ArrayList<Integer>();
+    public static ArrayList<Integer> procedures = new ArrayList<Integer>();
+    public static ArrayList<Integer> parametros = new ArrayList<Integer>();
+    public static ArrayList<Integer> cases = new ArrayList<Integer>();
+    public static ArrayList<Integer> fors = new ArrayList<Integer>();
+
+    //Gravar nomes da tabela de símbolo
+    public static ArrayList<String> SalvaParaMostrarTabelaSemantica = new ArrayList<String>();
     
-    //Inicializa Instruções da máquina hipotética ???
+    //Inicializa Instruções e Literais da máquina hipotética
     public static AreaInstrucoes AI = new AreaInstrucoes();
     public static AreaLiterais AL = new AreaLiterais();
     
@@ -53,12 +56,23 @@ public class AnalisadorSemantico {
             case 100:
 
             	//Inicializa Instruções e Literais na Hipotetica
+                MaquinaHipotetica = new Hipotetica();
+                AI = new AreaInstrucoes();
+                AL = new AreaLiterais();
             	MaquinaHipotetica.InicializaAI(AI);
             	MaquinaHipotetica.InicializaAL(AL);
 
-            	//Tabela de Símbolos
-            	Tabela tabela = new Tabela();
+            	//Inicializa Pilha
+                ifs = new ArrayList<Integer>();
+                whiles = new ArrayList<Integer>();
+                repeats = new ArrayList<Integer>();
+                procedures = new ArrayList<Integer>();
+                parametros = new ArrayList<Integer>();
+                cases = new ArrayList<Integer>();
+                fors = new ArrayList<Integer>();
 
+
+                // Inicializa valores padrões
                 nivel_atual = 0;
                 Pt_livre = 1;
                 escopo[0] = 1;
@@ -70,8 +84,7 @@ public class AnalisadorSemantico {
                 break;
             case 101:
 
-                //Hipotetica.IncluirAI(null, 26, 0, 0);
-//              //this.maquinaHipotetica.incluir(this.areaInstrucoes, 26, 0, 0);
+                MaquinaHipotetica.IncluirAI(AI, 26, 0, 0);
 
 //                for (int i = 0; i < this.tabelaSimbolos.getTabela().length; i++) {
 //                    if ((this.tabelaSimbolos.getTabela()[i][0] != null) && (this.tabelaSimbolos.getTabela()[i][1].equals("rótulo"))){
@@ -85,11 +98,9 @@ public class AnalisadorSemantico {
 //
 //                }
 
-
-
-
                 break;
             case 102:
+
 
                 MaquinaHipotetica.IncluirAI(AI, 24, 0, acaoAcumulada);
 
@@ -163,20 +174,18 @@ public class AnalisadorSemantico {
 
                             Tabela.adiciona(Table104);
 
-                            //this.parametros.insereElemento(this.tabelaSimbolos.buscar(this.penultimo));
-
                             np += 1;
                         }
                     } else {
 
                         Tabela.adiciona(Table104);
 
-                        //this.parametros.insereElemento(this.tabelaSimbolos.buscar(this.penultimo));
-
                         np += 1;
                     }
 
             	}
+
+                SalvaParaMostrarTabelaSemantica.add(Table104.getNome());
 
                 break;
             case 105:
@@ -221,12 +230,16 @@ public class AnalisadorSemantico {
                 Table108.setNome(penultimo+"");
                 Table108.setCategoria("procedure");
                 Table108.setNivel(nivel_atual+"");
-                Table108.setGeralA(AreaInstrucoes.LC + 1 + "");
+                //Table108.setGeralA((Instrucao.LC + 1) + "");
+                Table108.setGeralA("0");
                 Table108.setGeralB("0");
                 Table108.setProximo(null);
 
                 possuiParametro(false);
+
+                //parametros.add(???);
                 //this.parametros.insereElemento(this.tabelaSimbolos.buscar(this.penultimo));
+
                 nivel_atual += 1;
                 np = 0;
 
@@ -250,19 +263,20 @@ public class AnalisadorSemantico {
                     //this.tabelaSimbolos.setTabela(tabelaSimbolo2);
                 }
 
-                //this.instrucoes.insereInstrucao(19, 0, 0);
-                //this.maquinaHipotetica.incluir(this.areaInstrucoes, 19, 0, 0);
-                //this.procedures.insereElemento(this.areaInstrucoes.LC - 1);
+                MaquinaHipotetica.IncluirAI(AI, 19, 0, 0);
 
-                //this.parametros.insereElemento(this.np);
+                procedures.add(Instrucao.LC - 1);
+
+                parametros.add(np);
+
 
                 break;
             case 110:
 
-                procedures.remove(procedures.size());
+                procedures.remove(procedures.size()-1);
 
-                //MaquinaHipotetica.IncluirAI(AreaInstrucoes, 1, 0, np+1);
-                //instrucoes.insereInstrucao(1, 0, this.np + 1);
+                MaquinaHipotetica.IncluirAI(AI, 1, 0, np+1);
+
 
                 Simbolo Table110 = new Simbolo();
                 Table110.setNome("Busca");
@@ -308,42 +322,38 @@ public class AnalisadorSemantico {
                             Simbolo Table113_2 = new Simbolo();
                             Table113_2.setNome(nomeIdentificador+"");
                             Table113_2 = Tabela.buscar(Table113_2);
+                            Table113_2.setGeralA(Instrucao.LC+"");
 
-                            //Fazer aqui
+                            if (!Table113_2.getGeralA().equals("")){
+                                String lista = Table113_2.getGeralB();
+                                int qtd = 0;
 
-//                            String[][] tabelaSimbolo3 = this.tabelaSimbolos.getTabela();
-//
-//                            tabelaSimbolo3[this.tabelaSimbolos.buscar(this.nomeIdentificador)][3] = this.areaInstrucoes.LC+"";
-//
-//                            if (!tabelaSimbolo3[this.tabelaSimbolos.buscar(this.nomeIdentificador)][4].equals(""))
-//                            {
-//                                String lista = tabelaSimbolo3[this.tabelaSimbolos.buscar(this.nomeIdentificador)][4];
-//                                int qtd = 0;
-//
-//                                for (int i = 0; i < lista.length(); i++) {
-//                                    if (lista.charAt(i) == ' ') {
-//                                        qtd++;
-//                                    }
-//                                }
-//
-//                                int endereco = 0;
-//
-//                                lista = tiraProximo(lista);
-//
-//                                for (int i = 0; i < qtd; i++)
-//                                {
-//                                    endereco = Integer.parseInt(proximo(lista));
-//                                    lista = tiraProximo(lista);
-//
-//                                    this.instrucoes.alteraInstrucao(endereco, 0, this.areaInstrucoes.LC + 1);
-//                                    MaquinaHipotetica.alterar(this.areaInstrucoes, endereco, 0, this.areaInstrucoes.LC);
-//                                }
-//
-//                            }
-//
-//                            tabelaSimbolo3[this.tabelaSimbolos.buscar(this.nomeIdentificador)][4] = "";
-//
-//                            this.tabelaSimbolos.setTabela(tabelaSimbolo3);
+                                for (int i = 0; i < lista.length(); i++) {
+                                    if (lista.charAt(i) == ' ') {
+                                        qtd++;
+                                    }
+                                }
+
+                                int endereco = 0;
+
+                                lista = tiraProximo(lista);
+
+                                for (int i = 0; i < qtd; i++)
+                                {
+                                    endereco = Integer.parseInt(proximo(lista));
+                                    lista = tiraProximo(lista);
+
+                                    MaquinaHipotetica.AlterarAI(AI, endereco, 0, Instrucao.LC);
+
+                                }
+                            }
+
+
+                            Table113_2.setGeralA("");
+
+                            // mudar na tabela de símbolos
+
+                            //Table113_2.setTabela(tabelaSimbolo3);
                         }
                     }
                     else
@@ -358,13 +368,15 @@ public class AnalisadorSemantico {
 
                 nomeIdentificador = penultimo;
 
+                System.out.println(penultimo);
+
                 Simbolo Table114 = new Simbolo();
                 Table114.setNome(penultimo+"");
-
                 Table114 = Tabela.buscar(Table114);
 
-                if (Tabela.buscar(Table114) == null) {
-                    if (Table114.getNome().equals("variável")){
+
+                if (Table114 != null) {
+                    if (Table114.getCategoria().equals("variável")){
                         System.out.println("Erro semântico: atribuição da parte esquerda inválida");
                     } else {
                         nome_atribuicao_esquerda = nomeIdentificador;
@@ -383,9 +395,9 @@ public class AnalisadorSemantico {
                 Table115.setNome(nome_atribuicao_esquerda+"");
                 Table115 = Tabela.buscar(Table115);
 
-                //int d_nivel = nivel_atual - Integer.parseInt(this.tabelaSimbolos.getTabela()[this.tabelaSimbolos.buscar(this.nome_atribuicao_esquerda)][2]);
-                //this.instrucoes.insereInstrucao(4, d_nivel, Integer.parseInt(this.tabelaSimbolos.getTabela()[this.tabelaSimbolos.buscar(this.nome_atribuicao_esquerda)][3]));
-                //this.maquinaHipotetica.incluir(this.areaInstrucoes, 4, d_nivel, Integer.parseInt(this.tabelaSimbolos.getTabela()[this.tabelaSimbolos.buscar(this.nome_atribuicao_esquerda)][3]));
+                int d_nivel = nivel_atual - Integer.parseInt(Table115.getNivel());
+
+                MaquinaHipotetica.IncluirAI(AI, 4, d_nivel, Integer.parseInt(Table115.getGeralA()));
 
             	break;
             case 116:
@@ -395,7 +407,7 @@ public class AnalisadorSemantico {
                 Table116 = Tabela.buscar(Table116);
 
                 if (Table116 == null){
-                    System.out.println("Erro Semântico: procedure "+penultimo+" não fou declarado");
+                    System.out.println("Erro Semântico: procedure "+penultimo+" não foi declarado");
                 }else{
                     if(Table116.getCategoria().equals("procedure")){
                         nomeProcedimento = penultimo;
@@ -411,16 +423,19 @@ public class AnalisadorSemantico {
                 Table117.setNome(nomeProcedimento+"");
                 Table117 = Tabela.buscar(Table117);
 
-                if(!Table117.getNivel().equals((np+""))){
-                    System.out.println("Erro semântico: numero de parametros da procedure " + nomeProcedimento + " Não conferem com o número parâmetros passados");
+                if (Table117 == null){
+
+                    System.out.println("Erro semântico: Símbolo "+nomeProcedimento+" não declarado !!!");
+
                 }else{
-                    //this.instrucoes.insereInstrucao(25, 0, Integer.parseInt(this.tabelaSimbolos.getTabela()[this.tabelaSimbolos.buscar(this.nomeProcedimento)][3]) + 1);
-                    //this.maquinaHipotetica.incluir(this.areaInstrucoes, 25, 0, Integer.parseInt(this.tabelaSimbolos.getTabela()[this.tabelaSimbolos.buscar(this.nomeProcedimento)][3]));
+                    if(!Table117.getNivel().equals((np+""))){
+                        System.out.println("Erro semântico: numero de parametros da procedure " + nomeProcedimento + " Não conferem com o número parâmetros passados");
+                    }else{
+
+                        MaquinaHipotetica.IncluirAI(AI, 25, 0, Integer.parseInt(Table117.getGeralA()));
+
+                    }
                 }
-
-
-
-
 
             	break;
             case 118:
@@ -449,11 +464,12 @@ public class AnalisadorSemantico {
 
 
                         if (op2 != 0) {
-                            //this.instrucoes.insereInstrucao(19, 0, 0);
-                            //this.maquinaHipotetica.incluir(this.areaInstrucoes, 19, 0, op2);
+
+                            MaquinaHipotetica.IncluirAI(AI, 19, 0, op2);
+
                         } else {
-                            //this.instrucoes.insereInstrucao(19, 0, 0);
-                            //this.maquinaHipotetica.incluir(this.areaInstrucoes, 19, 0, 0);
+
+                            MaquinaHipotetica.IncluirAI(AI, 19, 0, 0);
 
                             //String[][] tabelaSimbolo4 = this.tabelaSimbolos.getTabela();
                             //int ind = this.tabelaSimbolos.buscar(this.penultimo);
@@ -469,33 +485,62 @@ public class AnalisadorSemantico {
             	break;
             case 120:
 
+                MaquinaHipotetica.IncluirAI(AI, 20, 0, 0);
+
+                ifs.add(Instrucao.LC - 1);
+
             	break;
             case 121:
 
+                MaquinaHipotetica.AlterarAI(AI, ifs.get(ifs.size() - 1), 0, Instrucao.LC);
+
+                ifs.remove(ifs.size() - 1);
 
             	break;
             case 122:
 
+                MaquinaHipotetica.AlterarAI(AI, ifs.get(ifs.size() - 1), 0, Instrucao.LC + 1);
+
+                ifs.remove(ifs.size() - 1);
+
+                MaquinaHipotetica.IncluirAI(AI, 19, 0, 0);
+
+                ifs.add(Instrucao.LC - 1);
 
             	break;
             case 123:
 
+                whiles.add(Instrucao.LC);
 
             	break;
             case 124:
 
+                MaquinaHipotetica.IncluirAI(AI, 20, 0, 0);
+
+                whiles.add(Instrucao.LC - 1);
 
             	break;
             case 125:
 
+                MaquinaHipotetica.AlterarAI(AI, whiles.get(whiles.size() - 1), 0, Instrucao.LC + 1);
+
+                whiles.remove(whiles.size());
+
+                MaquinaHipotetica.IncluirAI(AI, 19, 0, whiles.size() - 1);
+
+                whiles.remove(whiles.size());
 
             	break;
             case 126:
 
+                repeats.add(Instrucao.LC);
 
             	break;
             case 127:
 
+                MaquinaHipotetica.IncluirAI(AI, 20, 0, repeats.size());
+
+                repeats.remove(repeats.size() - 1);
 
             	break;
             case 128:
@@ -520,11 +565,12 @@ public class AnalisadorSemantico {
                     if (contexto.equals("readln")) {
 
                         if (Table129.getCategoria().equals("variável")) {
-                            //this.instrucoes.insereInstrucao(21, 0, 0);
-                            //this.maquinaHipotetica.incluir(this.areaInstrucoes, 21, 0, 0);
-                            //this.instrucoes.insereInstrucao(4, d_nivel2, Integer.parseInt(this.tabelaSimbolos.getTabela()[this.tabelaSimbolos.buscar(this.penultimo)][3]));
-                            //this.maquinaHipotetica.incluir(this.areaInstrucoes, 4, d_nivel2, Integer.parseInt(this.tabelaSimbolos.getTabela()[this.tabelaSimbolos.buscar(this.penultimo)][3]));
-                        }
+
+                            MaquinaHipotetica.IncluirAI(AI, 21, 0, 0);
+
+                            MaquinaHipotetica.IncluirAI(AI, 4, d_nivel2, Integer.parseInt(Table129.getGeralA()));
+
+                            }
                         else {
                             System.out.println("Erro semântico: identificador \""+penultimo+"\" não é uma variável");
                         }
@@ -538,11 +584,13 @@ public class AnalisadorSemantico {
                             System.out.println("Erro semântico: identificador \""+penultimo+"\" não é uma constante");
                         }
                         else if (Table129.getCategoria().equals("constante")) {
-                            //this.instrucoes.insereInstrucao(3, 0, Integer.parseInt(this.tabelaSimbolos.getTabela()[this.tabelaSimbolos.buscar(this.penultimo)][3]));
-                            //this.maquinaHipotetica.incluir(this.areaInstrucoes, 3, 0, Integer.parseInt(this.tabelaSimbolos.getTabela()[this.tabelaSimbolos.buscar(this.penultimo)][3]));
-                        } else {
-                            //this.instrucoes.insereInstrucao(2, d_nivel2, Integer.parseInt(this.tabelaSimbolos.getTabela()[this.tabelaSimbolos.buscar(this.penultimo)][3]));
-                            //this.maquinaHipotetica.incluir(this.areaInstrucoes, 2, d_nivel2, Integer.parseInt(this.tabelaSimbolos.getTabela()[this.tabelaSimbolos.buscar(this.penultimo)][3]));
+
+                            MaquinaHipotetica.IncluirAI(AI, 3, 0, Integer.parseInt(Table129.getGeralA()));
+
+                            } else {
+
+                            MaquinaHipotetica.IncluirAI(AI, 2, d_nivel2, Integer.parseInt(Table129.getGeralA()));
+
                         }
 
                     }
@@ -551,10 +599,22 @@ public class AnalisadorSemantico {
 
             	break;
             case 130:
-            	
+
+                Simbolo Table130 = new Simbolo();
+                Table130.setNome(penultimo+"");
+                Table130 = Tabela.buscar(Table130);
+
+                MaquinaHipotetica.IncluirAL(AL, penultimo);
+
+                //MaquinaHipotetica.IncluirAI(AI, 23, ???));
+                //this.instrucoes.insereInstrucao(23, 0, this.areaLiterais.literais - 1);
+                //this.maquinaHipotetica.incluir(this.areaInstrucoes, 23, 0, this.areaLiterais.literais - 1);
+
             	break;
             case 131:
-            	
+
+                MaquinaHipotetica.IncluirAI(AI, 22, 0,0);
+
             	break;
             case 132:
 
@@ -562,18 +622,67 @@ public class AnalisadorSemantico {
             	
             	break;
             case 133:
-            	
+
+                MaquinaHipotetica.AlterarAI(AI, cases.get(cases.size() - 1), 0,Instrucao.LC);
+
+                cases.remove(cases.size() - 1);
+
+                MaquinaHipotetica.IncluirAI(AI, 24, 0,-1);
             	
             	break;
             case 134:
+
+                MaquinaHipotetica.IncluirAI(AI, 28, 0,0);
+
+                int ant = Integer.parseInt(antepenultimo);
+
+                MaquinaHipotetica.IncluirAI(AI, 3, 0, ant);
+
+                MaquinaHipotetica.IncluirAI(AI, 15, 0,0);
+
+
+                //if (!cases.vazia()) {
+
+                MaquinaHipotetica.AlterarAI(AI, cases.get(cases.size() - 1), 0,Instrucao.LC + 1);
+
+                cases.remove(cases.size() - 1);
+
+                //}
             	
             	break;
             case 135:
-            	
-            	
+
+                MaquinaHipotetica.AlterarAI(AI, cases.get(cases.size()-1), 0, Instrucao.LC + 1);
+
+                cases.remove(cases.size()-1);
+
+                MaquinaHipotetica.IncluirAI(AI, 19, 0, 0);
+
+                cases.add(Instrucao.LC - 1);
+
             	break;
             case 136:
-            	
+
+                if (cases.size() > 0) {
+
+                    MaquinaHipotetica.AlterarAI(AI, cases.get(cases.size()-1), 0, Instrucao.LC + 1);
+
+                    cases.remove(cases.size()-1);
+
+                }
+
+                MaquinaHipotetica.IncluirAI(AI, 28, 0, 0);
+
+                int ant2 = Integer.parseInt(antepenultimo);
+
+                MaquinaHipotetica.IncluirAI(AI, 3, 0, ant2);
+
+                MaquinaHipotetica.IncluirAI(AI, 15, 0, 0);
+
+                MaquinaHipotetica.IncluirAI(AI, 29, 0, 0);
+
+                cases.add(Instrucao.LC - 1);
+
             	break;
             case 137:
 
@@ -583,8 +692,7 @@ public class AnalisadorSemantico {
 
                 if ((Table137 != null)  && (Table137.getCategoria().equals("variável"))) {
 
-                    // Precisa salvar o "endereço do nome em relação a TS"
-                    //forEndNome = this.tabelaSimbolos.buscar(this.penultimo);
+                    forEndNome =  Table137.hashCode();
                 }
                 else {
                     System.out.println("Erro semântico: variável \""+penultimo+"\" não declarada");
@@ -592,75 +700,143 @@ public class AnalisadorSemantico {
 
             	break;
             case 138:
-            	
+
+                Simbolo Table138 = new Simbolo();
+                Table138.setNome(forEndNome+"");
+                Table138 = Tabela.buscar(Table138);
+
+                int op1 = nivel_atual - Integer.parseInt(Table138.getNivel());
+                int op2 = Integer.parseInt(Table138.getGeralA());
+
+                MaquinaHipotetica.IncluirAI(AI, 4, op1, op2);
             	
             	break;
             case 139:
-            	
+
+                fors.add(Instrucao.LC);
+
+                MaquinaHipotetica.IncluirAI(AI, 28, 0, 0);
+
+                Simbolo Table139 = new Simbolo();
+                Table139.setNome(forEndNome+"");
+                Table139 = Tabela.buscar(Table139);
+
+                int op12 = nivel_atual - Integer.parseInt(Table139.getNivel());
+                int op22 = Integer.parseInt(Table139.getGeralA());
+
+                MaquinaHipotetica.IncluirAI(AI, 2, op12, op22);
+
+                MaquinaHipotetica.IncluirAI(AI, 18, 0, 0);
+
+                fors.add(Instrucao.LC);
+
+                MaquinaHipotetica.IncluirAI(AI, 20, 0, 0);
             	
             	break;
             case 140:
-            	
+
+                Simbolo Table140 = new Simbolo();
+                Table140.setNome(forEndNome+"");
+                Table140 = Tabela.buscar(Table140);
+
+                int op13 = nivel_atual - Integer.parseInt(Table140.getNivel());
+                int op23 = Integer.parseInt(Table140.getGeralA());
+
+                MaquinaHipotetica.IncluirAI(AI, 2, op13, op23);
+
+                MaquinaHipotetica.IncluirAI(AI, 3, 0, 1);
+
+                MaquinaHipotetica.IncluirAI(AI, 5, 0, 1);
+
+                MaquinaHipotetica.IncluirAI(AI, 4, op13, op23);
+
+                MaquinaHipotetica.IncluirAI(AI, 3, 0, 1);
+
+                MaquinaHipotetica.AlterarAI(AI, fors.get(fors.size()-1), 0, Instrucao.LC + 1);
+
+                MaquinaHipotetica.AlterarAI(AI, fors.get(fors.size()-1), 0, Instrucao.LC + 1);
+
+                fors.remove(fors.size()-1);
+
+                MaquinaHipotetica.IncluirAI(AI, 19, 0, fors.get(fors.size()-1));
+
+                MaquinaHipotetica.IncluirAI(AI, 24, 0, -1);
             	
             	break;
             case 141:
-            	
+
+                MaquinaHipotetica.IncluirAI(AI, 15, 0, 0);
             	
             	break;
             case 142:
-            	
+
+                MaquinaHipotetica.IncluirAI(AI, 13, 0, 0);
             	
             	break;
             case 143:
-            	
+
+                MaquinaHipotetica.IncluirAI(AI, 14, 0, 0);
             	
             	break;
             case 144:
-            	
+
+                MaquinaHipotetica.IncluirAI(AI, 18, 0, 0);
             	
             	break;
             case 145:
-            	
+
+                MaquinaHipotetica.IncluirAI(AI, 17, 0, 0);
             	
             	break;
             case 146:
-            	
+
+                MaquinaHipotetica.IncluirAI(AI, 16, 0, 0);
             	
             	break;
             case 147:
-            	
+
+                MaquinaHipotetica.IncluirAI(AI, 9, 0, 0);
             	
             	break;
             case 148:
-            	
+
+                MaquinaHipotetica.IncluirAI(AI, 5, 0, 0);
             	
             	break;
             case 149:
-            	
+
+                MaquinaHipotetica.IncluirAI(AI, 6, 0, 0);
             	
             	break;
             case 150:
-            	
+
+                MaquinaHipotetica.IncluirAI(AI, 12, 0, 0);
             	
             	break;
             case 151:
-            	
+
+                MaquinaHipotetica.IncluirAI(AI, 7, 0, 0);
             	
             	break;
             case 152:
-            	
+
+                MaquinaHipotetica.IncluirAI(AI, 8, 0, 0);
             	
             	break;
             case 153:
-            	
+
+                MaquinaHipotetica.IncluirAI(AI, 11, 0, 0);
             	
             	break;
             case 154:
-            	
+                int pen = Integer.parseInt((penultimo));
+
+                MaquinaHipotetica.IncluirAI(AI, 3, 0, pen);
             	
             	break;
             case 155:
-            	
+
+                MaquinaHipotetica.IncluirAI(Instrucao ,10, 0, 0);
             	
             	break;
             case 156:
@@ -676,6 +852,34 @@ public class AnalisadorSemantico {
     public static void possuiParametro(boolean temParametro) {
         temParametro = temParametro;
 
+    }
+
+    public static String tiraProximo(String a)
+    {
+        String aux = "";
+
+        for (int i = 0; i < a.length(); i++) {
+            if (a.charAt(i) == ' ') {
+                for (int j = i + 1; j < a.length(); j++) {
+                    aux = aux + a.charAt(j);
+                }
+                break;
+            }
+        }
+
+        return aux;
+    }
+
+    public static String proximo(String a)
+    {
+        String aux = "";
+
+        for (int i = 0; i < a.length(); i++) {
+            if (a.charAt(i) == ' ') break;
+            aux = aux + a.charAt(i);
+        }
+
+        return aux;
     }
 
 

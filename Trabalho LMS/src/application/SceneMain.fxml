@@ -126,6 +126,29 @@
                      </children></AnchorPane>
             </content>
           </Tab>
+        <Tab text="Tabela Intermediária">
+            <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                    <children>
+                        <VBox alignment="TOP_CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <children>
+                                <TableView fx:id="TabelaIntermediaria" editable="true" prefHeight="500.0" prefWidth="750.0">
+                                    <columns>
+                                        <TableColumn fx:id="TabelaIntermediariaNumero" minWidth="100.0" prefWidth="150.0" resizable="false" text="Número" />
+                                        <TableColumn fx:id="TabelaIntermediariaCategoria" minWidth="50.0" prefWidth="200.0" resizable="false" text="Categoria" />
+                                        <TableColumn fx:id="TabelaIntermediariaA" prefWidth="200.0" resizable="false" text="A" />
+                                        <TableColumn fx:id="TabelaIntermediariaB" prefWidth="200.0" resizable="false" text="B" />
+                                    </columns>
+                                    <columnResizePolicy>
+                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                    </columnResizePolicy>
+                                </TableView>
+                            </children>
+                        </VBox>
+                    </children></AnchorPane>
+            </content>
+
+          </Tab>
         </tabs>
       </TabPane>
    </top>

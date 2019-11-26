@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -1125,7 +1124,9 @@ public class ControllerMain {
 		//
 		//
 		
-	    
+
+		System.out.println( AnalisadorSemantico.SalvaParaMostrarTabelaSemantica.get(1));
+
 		
 	}
 
