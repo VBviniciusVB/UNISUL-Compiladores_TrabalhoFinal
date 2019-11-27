@@ -23,6 +23,8 @@ import semantico.AnalisadorSemantico;
 import sintatico.Constants;
 import sintatico.ParserConstants;
 import sintatico.Pilha;
+import tabeladesimbolos.Simbolo;
+import tabeladesimbolos.Tabela;
 
 public class ControllerMain {
 
@@ -133,11 +135,12 @@ public class ControllerMain {
 	ArrayList<String> Lexico = new ArrayList<String>();
 	ArrayList<Integer> LexicoID = new ArrayList<Integer>();
 	ArrayList<String> LexicoCodigo = new ArrayList<String>();
-	ArrayList<String> LexicoLinha = new ArrayList<String>();
+	public static ArrayList<String> LexicoLinha = new ArrayList<String>();
 	ArrayList<Integer> LexicoToken = new ArrayList<Integer>();
-	
 
-	
+	//Token e Linha sendo lido no sintático + semântico
+	public static int C = 0;
+	public static int TokenAtual = 0;
 
 	@FXML
 	private void ButtonProcuraArquivo (MouseEvent event) {
@@ -913,9 +916,9 @@ public class ControllerMain {
 					Token = Token + "*)";            		
 					ignorar = Atual - i + 1;
 
-					Lexico.add(Token);
-					LexicoID.add(0);
-					LexicoCodigo.add("Comentário");
+					//Lexico.add(Token);
+					//LexicoID.add(0);
+					//LexicoCodigo.add("Comentário");
 
 
 					// Comentários
@@ -1037,8 +1040,9 @@ public class ControllerMain {
 		}
 
 		System.out.println("");
-		int C = 0;
-		int TokenAtual = 0;
+
+		C = 0;
+		TokenAtual = 0;
 
 		do {
 
@@ -1070,7 +1074,6 @@ public class ControllerMain {
 						Error.setText("Analise finalizada");
 						break;
 					}
-					Error.setText("Desempilhado da matriz de simbolos " + topoSimbolos + " desempilhado da matriz entrada " + topoEntrada);
 					symbols.desempilhar();
 					inputStack.desempilhar();
 
@@ -1080,8 +1083,9 @@ public class ControllerMain {
 
 
 				}else{
-					//    	                    JOptionPane.showMessageDialog(null,"\"M(X,a) => erro\" + \"X = \" + topoSimbolos + \" a = \" + topoEntrada");
-					Error.setText("\"M(X,a) => erro\" + \"X = \" + topoSimbolos + \" a = \" + topoEntrada");
+
+					Error.setText("Token inesperado, erro no token ("+TokenAtual+") da linha ("+LexicoLinha.get(TokenAtual - 1)+")");
+
 					System.out.println(ParserConstants.PARSER_ERROR[topoSimbolos]);
 					break;
 				}
@@ -1113,8 +1117,9 @@ public class ControllerMain {
 							symbols.empilhar(productionRules[i]);
 						}
 					}else {
-						//    	                    JOptionPane.showMessageDialog(null, "Não encontrado na matriz de parse " + topoSimbolos + " - " + topoEntrada);
-						Error.setText("Não encontrado na matriz de parse " + topoSimbolos + " - " + topoEntrada);
+
+						Error.setText("Não encontrado na matriz de parse, erro no token ("+(TokenAtual+1)+") da linha ("+LexicoLinha.get(TokenAtual - 1)+")");
+
 						System.out.println("Error : " + topoSimbolos + " - " + topoEntrada);
 						for (int i = 0; i < symbols.pilha.length; i++){
 							System.out.println("  " + symbols.pilha[i] + " - " + inputStack.pilha[i]);
@@ -1172,7 +1177,35 @@ public class ControllerMain {
 
 		ObservableList<TabelaSemantico> Tabela2 = FXCollections.observableArrayList();
 
-		Tabela2.add(new TabelaSemantico("1","2","3","4","5","6","7"));
+		for (Simbolo simbolo : tabeladesimbolos.Tabela.hashtable) {
+			if (simbolo != null) {
+
+				if (TextoSimboloGeralB == null){
+					simbolo.setGeralB("0");
+				}
+
+				if (simbolo.getProximo() == null){
+					Tabela2.add(new TabelaSemantico(simbolo.hashCode()+"",simbolo.getNome()+"",simbolo.getCategoria()+"",simbolo.getNivel()+"",simbolo.getGeralA()+"",simbolo.getGeralB()+"",""));
+				}else{
+					Tabela2.add(new TabelaSemantico(simbolo.hashCode()+"",simbolo.getNome()+"",simbolo.getCategoria()+"",simbolo.getNivel()+"",simbolo.getGeralA()+"",simbolo.getGeralB()+"",simbolo.getProximo().hashCode()+""));
+				}
+
+				Simbolo proximo = simbolo.getProximo();
+				while (proximo != null) {
+
+					if (TextoSimboloGeralB == null){
+						simbolo.setGeralB("0");
+					}
+
+					if (simbolo.getProximo() == null){
+						Tabela2.add(new TabelaSemantico(simbolo.hashCode()+"",simbolo.getNome()+"",simbolo.getCategoria()+"",simbolo.getNivel()+"",simbolo.getGeralA()+"",simbolo.getGeralB()+"",""));
+					}else{
+						Tabela2.add(new TabelaSemantico(simbolo.hashCode()+"",simbolo.getNome()+"",simbolo.getCategoria()+"",simbolo.getNivel()+"",simbolo.getGeralA()+"",simbolo.getGeralB()+"",simbolo.getProximo().hashCode()+""));
+					}
+					proximo = proximo.getProximo();
+				}
+			}
+		}
 
 		TabelaSemantico.setItems(Tabela2);
 
@@ -1194,7 +1227,13 @@ public class ControllerMain {
 
 		ObservableList<TabelaIntermediaria> Tabela3 = FXCollections.observableArrayList();
 
-		Tabela3.add(new TabelaIntermediaria("1","2","3","4"));
+		for (int i = 0; i < AnalisadorSemantico.TABCodigo.size(); i++){
+
+			Tabela3.add(new TabelaIntermediaria((i+1)+"", AnalisadorSemantico.TABCodigo.get(i)+"",AnalisadorSemantico.TABGeralA.get(i)+"" ,AnalisadorSemantico.TABGeralB.get(i)+"" ));
+
+		}
+
+
 
 		TabelaIntermediaria.setItems(Tabela3);
 
@@ -1463,6 +1502,12 @@ public class ControllerMain {
 		public SimpleStringProperty bProperty() {
 			return b;
 		}
+
+	}
+
+	public static void MostrarErro(String Erro){
+
+		//ControllerMain.Error.setText(Erro);
 
 	}
 

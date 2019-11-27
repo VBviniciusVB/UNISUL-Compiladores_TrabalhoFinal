@@ -217,6 +217,7 @@ class Hipotetica{
 
 			operador=AI.AI[p].codigo;
 
+			System.out.println(operador);
 
 			l=AI.AI[p].op1;
 			a=AI.AI[p].op2;

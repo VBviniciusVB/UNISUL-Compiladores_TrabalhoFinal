@@ -2,6 +2,7 @@ package semantico;
 
 import java.util.ArrayList;
 
+import application.ControllerMain;
 import tabeladesimbolos.Simbolo;
 import tabeladesimbolos.Tabela;
 
@@ -41,8 +42,11 @@ public class AnalisadorSemantico {
     public static ArrayList<Integer> cases = new ArrayList<Integer>();
     public static ArrayList<Integer> fors = new ArrayList<Integer>();
 
-    //Gravar nomes da tabela de símbolo
-    public static ArrayList<String> SalvaParaMostrarTabelaSemantica = new ArrayList<String>();
+    //Gravar valores para o código intermediário
+    public static ArrayList<String> TABCodigo = new ArrayList<String>();
+    public static ArrayList<Integer> TABGeralA = new ArrayList<Integer>();
+    public static ArrayList<Integer> TABGeralB = new ArrayList<Integer>();
+
     
     //Inicializa Instruções e Literais da máquina hipotética
     public static AreaInstrucoes AI = new AreaInstrucoes();
@@ -86,49 +90,46 @@ public class AnalisadorSemantico {
                 Lit = 1;
 
                 //Limpar lista de símbolos
-
                 Tabela.clearHashtable();
 
-                // FALTOU LIMPAR OS VALORES QUE TEM NA TABELA DE SÍMBOLOS AKI
+                //Limpar Tabela intermediária
+                TABCodigo.clear();
+                TABGeralA.clear();
+                TABGeralB.clear();
+
 
                 break;
             case 101:
 
                 MaquinaHipotetica.IncluirAI(AI, 26, 0, 0);
+                TABCodigo.add("PARA");
+                TABGeralA.add(0);
+                TABGeralB.add(0);
 
-                for (int i = 0; i < Tabela.hastableLEngth(); i++) {
 
-                    Simbolo Table101 = new Simbolo();
-                    Table101.setNome("");
-                    Table101.setCategoria("rótulo");
-                    Table101.setNivel(i+"");
-                    Table101.setGeralB("");
 
-                    Table101 = Tabela.buscar(Table101);
+                for (Simbolo simbolo : tabeladesimbolos.Tabela.hashtable) {
+                    if (simbolo != null) {
 
-                    if(Table101 != null){
-                        if (Table101.getCategoria().equals("rótulo")){
-
-                            if (Table101.getGeralB().equals("")){
+                        if (simbolo.getCategoria().equals("rótulo")){
+                            if (simbolo.getGeralB().equals("")){
                                 break;
                             }
 
                             System.out.println("Erro semântico");
 
                         }
+
                     }
-
                 }
-
-
-
-
 
                 break;
             case 102:
 
-
                 MaquinaHipotetica.IncluirAI(AI, 24, 0, acaoAcumulada);
+                TABCodigo.add("AMEM");
+                TABGeralA.add(0);
+                TABGeralB.add(acaoAcumulada);
 
                 acaoAcumulada = 3;
 
@@ -186,6 +187,10 @@ public class AnalisadorSemantico {
                         nv += 1;
 
                     } else {
+
+                        //ControllerMain.Error.setText("Erro semântico, variável "+penultimo+" ja foi declarado, erro no token ("+(ControllerMain.TokenAtual+1)+") da linha ("+ControllerMain.LexicoLinha.get(ControllerMain.TokenAtual - 1)+")");
+
+
                         System.out.println("Erro semântico\nVariável \""+penultimo+"\" já foi declarada");
                     }
 
@@ -216,8 +221,6 @@ public class AnalisadorSemantico {
             	}
 
                 System.out.println("Adicionando :  "+Table104.getNome()+" --- da categoria : "+Table104.getCategoria());
-
-                SalvaParaMostrarTabelaSemantica.add(Table104.getNome());
 
                 break;
             case 105:
@@ -310,6 +313,9 @@ public class AnalisadorSemantico {
                 }
 
                 MaquinaHipotetica.IncluirAI(AI, 19, 0, 0);
+                TABCodigo.add("DSVS");
+                TABGeralA.add(0);
+                TABGeralB.add(0);
 
                 procedures.add(AI.LC - 1);
 
@@ -322,24 +328,29 @@ public class AnalisadorSemantico {
                 procedures.remove(procedures.size()-1);
 
                 MaquinaHipotetica.IncluirAI(AI, 1, 0, np+1);
-
+                TABCodigo.add("RETU");
+                TABGeralA.add(0);
+                TABGeralB.add(np+1);
 
                 Simbolo Table110 = new Simbolo();
                 Table110.setNome("Busca");
                 Table110.setCategoria("rótulo");
 
-//                for (int i = 0; i < tabelaSimbolos.getTabela().procedures.size(); i++) {
-//                    if ((this.tabelaSimbolos.getTabela()[i][0] != null) &&
-//                            (this.tabelaSimbolos.getTabela()[i][1].equals("rótulo")))
-//                    {
-//                        if (this.tabelaSimbolos.getTabela()[i][4].equals("")) break;
+                for (Simbolo simbolo : tabeladesimbolos.Tabela.hashtable) {
+                    if (simbolo != null) {
 
-//                        System.out.println ("Erro semântico");
-//
-//                        break;
-//                    }
-//
-//                }
+                        if (simbolo.getCategoria().equals("rótulo")){
+                            if (simbolo.getGeralB().equals("")){
+                                break;
+                            }
+
+
+                            System.out.println("Erro semântico");
+
+                        }
+
+                    }
+                }
 
                 break;
             case 111:
@@ -390,6 +401,8 @@ public class AnalisadorSemantico {
                                     lista = tiraProximo(lista);
 
                                     MaquinaHipotetica.AlterarAI(AI, endereco, 0, AI.LC);
+                                    TABGeralA.set(endereco,0);
+                                    TABGeralB.set(endereco,AI.LC);
 
                                 }
                             }
@@ -449,6 +462,9 @@ public class AnalisadorSemantico {
                     int d_nivel = nivel_atual - Integer.parseInt(Table115.getNivel());
 
                     MaquinaHipotetica.IncluirAI(AI, 4, d_nivel, Integer.parseInt(Table115.getGeralA()));
+                    TABCodigo.add("ARMZ");
+                    TABGeralA.add(d_nivel);
+                    TABGeralB.add(Integer.parseInt(Table115.getGeralA()));
 
                 }
 
@@ -488,6 +504,9 @@ public class AnalisadorSemantico {
                     }else{
 
                         MaquinaHipotetica.IncluirAI(AI, 25, 0, Integer.parseInt(Table117.getGeralA()));
+                        TABCodigo.add("CALL");
+                        TABGeralA.add(0);
+                        TABGeralB.add(Integer.parseInt(Table117.getGeralA()));
 
                     }
                 }
@@ -518,10 +537,16 @@ public class AnalisadorSemantico {
                         if (op2 != 0) {
 
                             MaquinaHipotetica.IncluirAI(AI, 19, 0, op2);
+                            TABCodigo.add("DSVS");
+                            TABGeralA.add(0);
+                            TABGeralB.add(op2);
 
                         } else {
 
                             MaquinaHipotetica.IncluirAI(AI, 19, 0, 0);
+                            TABCodigo.add("DSVS");
+                            TABGeralA.add(0);
+                            TABGeralB.add(0);
 
                             Simbolo Table119_2 = new Simbolo();
                             Table119_2 = Tabela.buscar(Table119);
@@ -541,6 +566,9 @@ public class AnalisadorSemantico {
             case 120:
 
                 MaquinaHipotetica.IncluirAI(AI, 20, 0, 0);
+                TABCodigo.add("DSVF");
+                TABGeralA.add(0);
+                TABGeralB.add(0);
 
                 ifs.add(AI.LC - 1);
 
@@ -548,6 +576,8 @@ public class AnalisadorSemantico {
             case 121:
 
                 MaquinaHipotetica.AlterarAI(AI, ifs.get(ifs.size() - 1), 0, AI.LC);
+                TABGeralA.set(ifs.get(ifs.size() - 1),0);
+                TABGeralB.set(ifs.get(ifs.size() - 1),AI.LC);
 
                 ifs.remove(ifs.size() - 1);
 
@@ -555,10 +585,16 @@ public class AnalisadorSemantico {
             case 122:
 
                 MaquinaHipotetica.AlterarAI(AI, ifs.get(ifs.size() - 1), 0, AI.LC + 1);
+                TABGeralA.set(ifs.get(ifs.size() - 1), 0);
+                TABGeralB.set(ifs.get(ifs.size() - 1), 0);
 
                 ifs.remove(ifs.size() - 1);
 
                 MaquinaHipotetica.IncluirAI(AI, 19, 0, 0);
+                TABCodigo.add("DSVS");
+                TABGeralA.add(0);
+                TABGeralB.add(0);
+
 
                 ifs.add(AI.LC - 1);
 
@@ -571,6 +607,9 @@ public class AnalisadorSemantico {
             case 124:
 
                 MaquinaHipotetica.IncluirAI(AI, 20, 0, 0);
+                TABCodigo.add("DSVF");
+                TABGeralA.add(0);
+                TABGeralB.add(0);
 
                 whiles.add(AI.LC -1);
 
@@ -579,10 +618,15 @@ public class AnalisadorSemantico {
                 whiles.remove(whiles.size() - 1);
 
                 MaquinaHipotetica.AlterarAI(AI, whiles.get(whiles.size() - 1), 0, AI.LC + 1);
+                TABGeralA.set(whiles.get(whiles.size() - 1), 0);
+                TABGeralB.set(whiles.get(whiles.size() - 1), AI.LC + 1);
 
                 whiles.remove(whiles.size() - 1);
 
                 MaquinaHipotetica.IncluirAI(AI, 19, 0, whiles.size() - 1);
+                TABCodigo.add("DSVS");
+                TABGeralA.add(0);
+                TABGeralB.add(whiles.size() - 1);
 
 
             	break;
@@ -594,6 +638,9 @@ public class AnalisadorSemantico {
             case 127:
 
                 MaquinaHipotetica.IncluirAI(AI, 20, 0, repeats.size());
+                TABCodigo.add("DSVF");
+                TABGeralA.add(0);
+                TABGeralB.add(repeats.size());
 
                 repeats.remove(repeats.size() - 1);
 
@@ -623,8 +670,14 @@ public class AnalisadorSemantico {
                         if (Table129.getCategoria().equals("variável")) {
 
                             MaquinaHipotetica.IncluirAI(AI, 21, 0, 0);
+                            TABCodigo.add("LEIT");
+                            TABGeralA.add(0);
+                            TABGeralB.add(0);
 
                             MaquinaHipotetica.IncluirAI(AI, 4, d_nivel2, Integer.parseInt(Table129.getGeralA()));
+                            TABCodigo.add("ARMZ");
+                            TABGeralA.add(d_nivel2);
+                            TABGeralB.add(Integer.parseInt(Table129.getGeralA()));
 
                             }
                         else {
@@ -642,10 +695,16 @@ public class AnalisadorSemantico {
                         else if (Table129.getCategoria().equals("constante")) {
 
                             MaquinaHipotetica.IncluirAI(AI, 3, 0, Integer.parseInt(Table129.getGeralA()));
+                            TABCodigo.add("CRCT");
+                            TABGeralA.add(0);
+                            TABGeralB.add(Integer.parseInt(Table129.getGeralA()));
 
                             } else {
 
                             MaquinaHipotetica.IncluirAI(AI, 2, d_nivel2, Integer.parseInt(Table129.getGeralA()));
+                            TABCodigo.add("CRVL");
+                            TABGeralA.add(d_nivel2);
+                            TABGeralB.add(Integer.parseInt(Table129.getGeralA()));
 
                         }
 
@@ -663,12 +722,18 @@ public class AnalisadorSemantico {
                 MaquinaHipotetica.IncluirAL(AL, penultimo);
 
                 MaquinaHipotetica.IncluirAI(AI, 23, 0, AL.LIT - 1);
+                TABCodigo.add("IMPRLIT");
+                TABGeralA.add(0);
+                TABGeralB.add(AL.LIT - 1);
 
 
             	break;
             case 131:
 
                 MaquinaHipotetica.IncluirAI(AI, 22, 0,0);
+                TABCodigo.add("IMPR");
+                TABGeralA.add(0);
+                TABGeralB.add(0);
 
             	break;
             case 132:
@@ -681,26 +746,42 @@ public class AnalisadorSemantico {
             case 133:
 
                 MaquinaHipotetica.AlterarAI(AI, cases.get(cases.size() - 1), 0,AI.LC);
+                TABGeralA.set(cases.get(cases.size() - 1), 0);
+                TABGeralB.set(cases.get(cases.size() - 1), AI.LC);
 
                 cases.remove(cases.size() - 1);
 
                 MaquinaHipotetica.IncluirAI(AI, 24, 0,-1);
+                TABCodigo.add("AMEM");
+                TABGeralA.add(0);
+                TABGeralB.add(-1);
             	
             	break;
             case 134:
 
                 MaquinaHipotetica.IncluirAI(AI, 28, 0,0);
+                TABCodigo.add("COPI");
+                TABGeralA.add(0);
+                TABGeralB.add(0);
 
                 int ant = Integer.parseInt(antepenultimo);
 
                 MaquinaHipotetica.IncluirAI(AI, 3, 0, ant);
+                TABCodigo.add("CRCT");
+                TABGeralA.add(0);
+                TABGeralB.add(ant);
 
                 MaquinaHipotetica.IncluirAI(AI, 15, 0,0);
+                TABCodigo.add("CMIG");
+                TABGeralA.add(0);
+                TABGeralB.add(0);
 
 
                 //if (!cases.vazia()) {
 
                 MaquinaHipotetica.AlterarAI(AI, cases.get(cases.size() - 1), 0,AI.LC + 1);
+                TABGeralA.set(cases.get(cases.size() - 1), 0);
+                TABGeralB.set(cases.get(cases.size() - 1), AI.LC + 1);
 
                 cases.remove(cases.size() - 1);
 
@@ -710,10 +791,15 @@ public class AnalisadorSemantico {
             case 135:
 
                 MaquinaHipotetica.AlterarAI(AI, cases.get(cases.size()-1), 0, AI.LC + 1);
+                TABGeralA.set(cases.get(cases.size() - 1), 0);
+                TABGeralB.set(cases.get(cases.size() - 1), AI.LC + 1);
 
                 cases.remove(cases.size()-1);
 
                 MaquinaHipotetica.IncluirAI(AI, 19, 0, 0);
+                TABCodigo.add("DSVS");
+                TABGeralA.add(0);
+                TABGeralB.add(0);
 
                 cases.add(AI.LC - 1);
 
@@ -723,20 +809,34 @@ public class AnalisadorSemantico {
                 if (cases.size() > 0) {
 
                     MaquinaHipotetica.AlterarAI(AI, cases.get(cases.size()-1), 0, AI.LC + 1);
+                    TABGeralA.set(cases.get(cases.size() - 1), 0);
+                    TABGeralB.set(cases.get(cases.size() - 1), AI.LC + 1);
 
                     cases.remove(cases.size()-1);
 
                 }
 
                 MaquinaHipotetica.IncluirAI(AI, 28, 0, 0);
+                TABCodigo.add("COPI");
+                TABGeralA.add(0);
+                TABGeralB.add(0);
 
                 int ant2 = Integer.parseInt(antepenultimo);
 
                 MaquinaHipotetica.IncluirAI(AI, 3, 0, ant2);
+                TABCodigo.add("CRCT");
+                TABGeralA.add(0);
+                TABGeralB.add(ant2);
 
                 MaquinaHipotetica.IncluirAI(AI, 15, 0, 0);
+                TABCodigo.add("CMIG");
+                TABGeralA.add(0);
+                TABGeralB.add(0);
 
                 MaquinaHipotetica.IncluirAI(AI, 29, 0, 0);
+                TABCodigo.add("DSVT");
+                TABGeralA.add(0);
+                TABGeralB.add(0);
 
                 cases.add(AI.LC - 1);
 
@@ -766,6 +866,9 @@ public class AnalisadorSemantico {
                 int op2 = Integer.parseInt(Table138.getGeralA());
 
                 MaquinaHipotetica.IncluirAI(AI, 4, op1, op2);
+                TABCodigo.add("ARMZ");
+                TABGeralA.add(op1);
+                TABGeralB.add(op2);
             	
             	break;
             case 139:
@@ -773,6 +876,9 @@ public class AnalisadorSemantico {
                 fors.add(AI.LC);
 
                 MaquinaHipotetica.IncluirAI(AI, 28, 0, 0);
+                TABCodigo.add("COPI");
+                TABGeralA.add(0);
+                TABGeralB.add(0);
 
                 Simbolo Table139 = new Simbolo();
                 Table139.setNome(forEndNome+"");
@@ -782,12 +888,21 @@ public class AnalisadorSemantico {
                 int op22 = Integer.parseInt(Table139.getGeralA());
 
                 MaquinaHipotetica.IncluirAI(AI, 2, op12, op22);
+                TABCodigo.add("CRVL");
+                TABGeralA.add(op12);
+                TABGeralB.add(op22);
 
                 MaquinaHipotetica.IncluirAI(AI, 18, 0, 0);
+                TABCodigo.add("CMAI");
+                TABGeralA.add(0);
+                TABGeralB.add(0);
 
                 fors.add(AI.LC);
 
                 MaquinaHipotetica.IncluirAI(AI, 20, 0, 0);
+                TABCodigo.add("DSVF");
+                TABGeralA.add(0);
+                TABGeralB.add(0);
             	
             	break;
             case 140:
@@ -800,100 +915,166 @@ public class AnalisadorSemantico {
                 int op23 = Integer.parseInt(Table140.getGeralA());
 
                 MaquinaHipotetica.IncluirAI(AI, 2, op13, op23);
+                TABCodigo.add("CRVL");
+                TABGeralA.add(op13);
+                TABGeralB.add(op23);
 
                 MaquinaHipotetica.IncluirAI(AI, 3, 0, 1);
+                TABCodigo.add("CRCT");
+                TABGeralA.add(0);
+                TABGeralB.add(1);
 
                 MaquinaHipotetica.IncluirAI(AI, 5, 0, 1);
+                TABCodigo.add("SOMA");
+                TABGeralA.add(0);
+                TABGeralB.add(1);
 
                 MaquinaHipotetica.IncluirAI(AI, 4, op13, op23);
+                TABCodigo.add("ARMZ");
+                TABGeralA.add(op13);
+                TABGeralB.add(op23);
 
                 MaquinaHipotetica.IncluirAI(AI, 3, 0, 1);
+                TABCodigo.add("CRCT");
+                TABGeralA.add(0);
+                TABGeralB.add(1);
 
                 MaquinaHipotetica.AlterarAI(AI, fors.get(fors.size()-1), 0, AI.LC + 1);
-
-                MaquinaHipotetica.AlterarAI(AI, fors.get(fors.size()-1), 0, AI.LC + 1);
+                TABGeralA.set(fors.get(fors.size() - 1), 0);
+                TABGeralB.set(fors.get(fors.size() - 1), AI.LC + 1);
 
                 fors.remove(fors.size()-1);
 
                 MaquinaHipotetica.IncluirAI(AI, 19, 0, fors.get(fors.size()-1));
+                TABCodigo.add("DSVS");
+                TABGeralA.add(0);
+                TABGeralB.add(fors.get(fors.size()-1));
 
                 MaquinaHipotetica.IncluirAI(AI, 24, 0, -1);
+                TABCodigo.add("AMEM");
+                TABGeralA.add(0);
+                TABGeralB.add(-1);
             	
             	break;
             case 141:
 
                 MaquinaHipotetica.IncluirAI(AI, 15, 0, 0);
+                TABCodigo.add("CMIG");
+                TABGeralA.add(0);
+                TABGeralB.add(0);
             	
             	break;
             case 142:
 
                 MaquinaHipotetica.IncluirAI(AI, 13, 0, 0);
+                TABCodigo.add("CMME");
+                TABGeralA.add(0);
+                TABGeralB.add(0);
             	
             	break;
             case 143:
 
                 MaquinaHipotetica.IncluirAI(AI, 14, 0, 0);
+                TABCodigo.add("CMMA");
+                TABGeralA.add(0);
+                TABGeralB.add(0);
             	
             	break;
             case 144:
 
                 MaquinaHipotetica.IncluirAI(AI, 18, 0, 0);
+                TABCodigo.add("CMAI");
+                TABGeralA.add(0);
+                TABGeralB.add(0);
             	
             	break;
             case 145:
 
                 MaquinaHipotetica.IncluirAI(AI, 17, 0, 0);
+                TABCodigo.add("CMEI");
+                TABGeralA.add(0);
+                TABGeralB.add(0);
             	
             	break;
             case 146:
 
                 MaquinaHipotetica.IncluirAI(AI, 16, 0, 0);
+                TABCodigo.add("CMDF");
+                TABGeralA.add(0);
+                TABGeralB.add(0);
             	
             	break;
             case 147:
 
                 MaquinaHipotetica.IncluirAI(AI, 9, 0, 0);
+                TABCodigo.add("INVR");
+                TABGeralA.add(0);
+                TABGeralB.add(0);
             	
             	break;
             case 148:
 
                 MaquinaHipotetica.IncluirAI(AI, 5, 0, 0);
+                TABCodigo.add("SOMA");
+                TABGeralA.add(0);
+                TABGeralB.add(0);
             	
             	break;
             case 149:
 
                 MaquinaHipotetica.IncluirAI(AI, 6, 0, 0);
+                TABCodigo.add("SUBT");
+                TABGeralA.add(0);
+                TABGeralB.add(0);
             	
             	break;
             case 150:
 
                 MaquinaHipotetica.IncluirAI(AI, 12, 0, 0);
+                TABCodigo.add("DISJ");
+                TABGeralA.add(0);
+                TABGeralB.add(0);
             	
             	break;
             case 151:
 
                 MaquinaHipotetica.IncluirAI(AI, 7, 0, 0);
+                TABCodigo.add("MULT");
+                TABGeralA.add(0);
+                TABGeralB.add(0);
             	
             	break;
             case 152:
 
                 MaquinaHipotetica.IncluirAI(AI, 8, 0, 0);
+                TABCodigo.add("DIVI");
+                TABGeralA.add(0);
+                TABGeralB.add(0);
             	
             	break;
             case 153:
 
                 MaquinaHipotetica.IncluirAI(AI, 11, 0, 0);
+                TABCodigo.add("CONJ");
+                TABGeralA.add(0);
+                TABGeralB.add(0);
             	
             	break;
             case 154:
                 int pen = Integer.parseInt((penultimo));
 
                 MaquinaHipotetica.IncluirAI(AI, 3, 0, pen);
+                TABCodigo.add("CRCT");
+                TABGeralA.add(0);
+                TABGeralB.add(pen);
             	
             	break;
             case 155:
 
                 MaquinaHipotetica.IncluirAI(AI ,10, 0, 0);
+                TABCodigo.add("NEGA");
+                TABGeralA.add(0);
+                TABGeralB.add(0);
             	
             	break;
             case 156:

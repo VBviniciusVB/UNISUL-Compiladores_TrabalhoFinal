@@ -5,7 +5,7 @@ public class Tabela {
     private static final int tableSize = 25147; //first prime after 25143
     static int index;
     int collisions;
-    static Simbolo[] hashtable = new Simbolo[tableSize];
+    public static Simbolo[] hashtable = new Simbolo[tableSize];
 
     public static int hash(String key, int tableSize) {
 
@@ -22,10 +22,11 @@ public class Tabela {
         return hashtable.length;
     }
 
-    public void mostraConteudoTabela() {
-        for (Simbolo simbolo : this.hashtable) {
+    public static void mostraConteudoTabela() {
+        for (Simbolo simbolo : hashtable) {
             if (simbolo != null) {
-                System.out.println(simbolo.getNome() + " - " + "Próximo:  " + ( simbolo.getProximo() != null ? simbolo.getProximo().getNome() : null)  + " - " + simbolo.getCategoria() + " - " + simbolo.getGeralA() + " - " + simbolo.getGeralB() + " - " + simbolo.getNivel());
+
+                System.out.println(simbolo.hashCode() + " - " + simbolo.getNome() + " - " + "Próximo:  " + ( simbolo.getProximo() != null ? simbolo.getProximo().getNome() : null)  + " - " + simbolo.getCategoria() + " - " + simbolo.getGeralA() + " - " + simbolo.getGeralB() + " - " + simbolo.getNivel());
 
                 Simbolo proximo = simbolo.getProximo();
                 while (proximo != null) {
