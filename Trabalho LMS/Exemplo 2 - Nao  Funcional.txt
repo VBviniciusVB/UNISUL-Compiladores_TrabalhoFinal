@@ -1,0 +1,10 @@
+PROGRAM Exemplo2NaoFuncional;
+    VAR Y,N :INTEGER;
+    BEGIN
+        WRITELN("Escreva algum número entre 1 a 2");
+        READLN(N);
+        CASE O OF
+	    1: WRITELN("Número Um");
+	    2: WRITELN("Número Dois")
+    END;
+END.

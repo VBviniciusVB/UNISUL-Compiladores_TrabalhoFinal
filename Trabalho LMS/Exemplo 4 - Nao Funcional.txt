@@ -1,0 +1,19 @@
+PROGRAM Exemplo4NaoFuncional;
+    VAR
+        A :INTEGER;
+	B :INTEGER;
+	C :INTEGER;
+
+    BEGIN
+        A := 7;
+	B := 9;
+	C := 2;
+        WHILE C < 3 DO 
+
+	BEGIN
+            WRITELN(C);
+            n ::= n + 1;
+	    k :== k + 1;
+            o :>= o + 1;
+    END;
+END;

@@ -1,0 +1,23 @@
+PROGRAM Exemplo4Funcional;
+    VAR
+
+        o :INTEGER;
+	n :INTEGER;
+	k :INTEGER;
+
+    BEGIN
+
+        o := 0;
+	n := 0;
+	k := 1;
+
+        WHILE n < 3 DO 
+	BEGIN
+
+            WRITELN(n);
+            n := n + 1;
+	    k := k + 2;
+            o := o + 3;
+
+    END;
+END.

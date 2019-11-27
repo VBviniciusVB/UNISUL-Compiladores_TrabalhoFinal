@@ -767,7 +767,7 @@ public class ControllerMain {
 					ignorar = Atual - i;
 
 					Lexico.add(Token);
-					LexicoID.add(0);
+					LexicoID.add(21);
 					LexicoCodigo.add("Literal");
 
 
@@ -881,11 +881,15 @@ public class ControllerMain {
 
 					LexicoLinha.add(Linha+"");
 
+					int LinhaAux = Linha;
+					System.out.println(LinhaAux);
+
 					while (FIM == false && (Codigo.charAt(Atual) != '*' || Codigo.charAt(Atual+1) != ')')) {
 
 						if (Letra == '\n') {
 
 							Linha++;
+
 						}
 
 						Letra = Codigo.charAt(Atual);
@@ -900,7 +904,9 @@ public class ControllerMain {
 								FIM = true;
 							}
 
-							Error.setText("Linha : "+LexicoLinha.get(LexicoLinha.size()-1)+" - Erro Encontrado, comentário não foi finalizado");
+							Linha = LinhaAux;
+
+							Error.setText("Linha : "+LinhaAux+" - Erro Encontrado, comentário não foi finalizado");
 
 							Letra = Codigo.charAt(Tamanho-2);
 							Token = Token + Letra;
@@ -1118,12 +1124,11 @@ public class ControllerMain {
 						}
 					}else {
 
-						Error.setText("Não encontrado na matriz de parse, erro no token ("+(TokenAtual+1)+") da linha ("+LexicoLinha.get(TokenAtual - 1)+")");
+						Error.setText("Não encontrado na matriz de parse, erro no token ("+(TokenAtual)+") da linha ("+LexicoLinha.get(TokenAtual - 1)+")");
 
 						System.out.println("Error : " + topoSimbolos + " - " + topoEntrada);
-						for (int i = 0; i < symbols.pilha.length; i++){
-							System.out.println("  " + symbols.pilha[i] + " - " + inputStack.pilha[i]);
-						}
+
+
 						break;
 					}
 
@@ -1172,8 +1177,6 @@ public class ControllerMain {
 				new PropertyValueFactory<>("a"));
 		TabelaSemanticoB.setCellValueFactory(
 				new PropertyValueFactory<>("b"));
-		TabelaSemanticoProximo.setCellValueFactory(
-				new PropertyValueFactory<>("proximo"));
 
 		ObservableList<TabelaSemantico> Tabela2 = FXCollections.observableArrayList();
 

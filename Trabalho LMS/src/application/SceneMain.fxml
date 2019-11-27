@@ -26,7 +26,7 @@
                            <children>
                               <VBox alignment="TOP_CENTER" prefHeight="400.0" prefWidth="350.0">
                                  <children>
-                                    <TextArea fx:id="Texto" prefHeight="400.0" promptText="Escreva aqui o código" wrapText="true">
+                                    <TextArea fx:id="Texto" prefHeight="400.0" promptText="Escreva aqui o código">
                                        <font>
                                           <Font name="Arial" size="15.0" />
                                        </font>
@@ -110,12 +110,11 @@
                            <children>
                               <TableView fx:id="TabelaSemantico" editable="true" prefHeight="500.0" prefWidth="750.0">
                                  <columns>
-                                    <TableColumn fx:id="TabelaSemanticoNome" minWidth="50.0" prefWidth="100.0" resizable="false" text="Nome" />
-                                    <TableColumn fx:id="TabelaSemanticoCategoria" minWidth="50.0" prefWidth="115.0" resizable="false" text="Categoria" />
-                                    <TableColumn fx:id="TabelaSemanticoNivel" minWidth="100.0" prefWidth="190.0" resizable="false" text="Nível" />
-                                    <TableColumn fx:id="TabelaSemanticoA" prefWidth="130.0" resizable="false" text="Geral A" />
-                                    <TableColumn fx:id="TabelaSemanticoB" prefWidth="130.0" resizable="false" text="Geral B" />
-                                    <TableColumn fx:id="TabelaSemanticoProximo" prefWidth="85.0" resizable="false" text="Próximo" />
+                                    <TableColumn fx:id="TabelaSemanticoNome" minWidth="50.0" prefWidth="150.0" resizable="false" text="Nome" />
+                                    <TableColumn fx:id="TabelaSemanticoCategoria" minWidth="50.0" prefWidth="150.0" resizable="false" text="Categoria" />
+                                    <TableColumn fx:id="TabelaSemanticoNivel" minWidth="100.0" prefWidth="150.0" resizable="false" text="Nível" />
+                                    <TableColumn fx:id="TabelaSemanticoA" prefWidth="150.0" resizable="false" text="Geral A" />
+                                    <TableColumn fx:id="TabelaSemanticoB" prefWidth="150.0" resizable="false" text="Geral B" />
                                  </columns>
                                  <columnResizePolicy>
                                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

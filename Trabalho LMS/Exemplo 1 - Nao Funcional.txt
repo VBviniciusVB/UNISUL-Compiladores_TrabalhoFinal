@@ -1,0 +1,6 @@
+PROGRAM Exemplo1NaoFuncional;
+   VAR a:INTEGER;
+BEGIN
+   a:= a+20;
+   WRITELN(b);
+END.

@@ -1,0 +1,16 @@
+PROGRAM Exemplo3Funcional;
+
+(*Testando o comentário *)
+
+    VAR
+	x, y :INTEGER;
+    BEGIN
+	x:= 5;
+	y:= 3;
+	(*Outro Comentário para testar*)
+        IF x > y THEN BEGIN
+            (*Comentário Adicional *) WRITELN("x: ", x);
+        END ELSE BEGIN
+            WRITELN("y: ", y);
+    END; (*Não esqueça do comentário com símbolos tais como + ou - *)
+END.

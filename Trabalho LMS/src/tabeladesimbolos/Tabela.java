@@ -56,30 +56,44 @@ public class Tabela {
         return hashtable;
     }
 
-    public boolean remover(Simbolo simbolo) {
-        int index = this.hash(simbolo.getNome(), this.tableSize);
+    public static boolean remover(Simbolo simbolo) {
+        int index = hash(simbolo.getNome(), tableSize);
 
         Simbolo atual = hashtable[index];
-        Simbolo proximo = atual.getProximo();
 
-        if (proximo == null && atual.getNome().equals(simbolo.getNome())) {
+        Simbolo proximo = null;
+
+        if (atual == null){
+            System.out.println("Vazio");
+            proximo = null;
             hashtable[index] = null;
             return true;
 
-        } else if (proximo == null && !atual.getNome().equals(simbolo.getNome())) {
-            return false;
+        }else{
+            proximo = atual.getProximo();
+            if (proximo == null && atual.getNome().equals(simbolo.getNome())) {
+                hashtable[index] = null;
+                return true;
 
-        } else {
-            do {
+            } else if (proximo == null && !atual.getNome().equals(simbolo.getNome())) {
+                return false;
 
-                if (proximo != null && proximo.getNome().equals(simbolo.getNome())) {
-                    atual.setProximo(proximo.getProximo());
-                    return true;
-                }
-            } while (hasProximo(proximo));
+            } else {
+                do {
 
-            return false;
+                    if (proximo != null && proximo.getNome().equals(simbolo.getNome())) {
+                        atual.setProximo(proximo.getProximo());
+                        return true;
+                    }
+                } while (hasProximo(proximo));
+
+                return false;
+            }
         }
+
+
+
+
     }
 
     public static Simbolo buscar(Simbolo simbolo) {
