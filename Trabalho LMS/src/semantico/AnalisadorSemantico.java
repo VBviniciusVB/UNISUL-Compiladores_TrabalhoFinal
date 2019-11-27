@@ -10,7 +10,7 @@ public class AnalisadorSemantico {
 
     public static String ultimo = "Ultimo";
     public static String penultimo = "Penultimo";
-    private static String antepenultimo = "0";
+    public static String antepenultimo = "999";
     private static int acaoAcumulada = 3;
     public static Hipotetica MaquinaHipotetica;
     private static int end_ident = 0;
@@ -46,6 +46,9 @@ public class AnalisadorSemantico {
     public static ArrayList<String> TABCodigo = new ArrayList<String>();
     public static ArrayList<Integer> TABGeralA = new ArrayList<Integer>();
     public static ArrayList<Integer> TABGeralB = new ArrayList<Integer>();
+
+    //Gravar lista de erros dos cases
+    public static ArrayList<String> CaseError = new ArrayList<String>();
 
     
     //Inicializa Instruções e Literais da máquina hipotética
@@ -106,8 +109,6 @@ public class AnalisadorSemantico {
                 TABGeralA.add(0);
                 TABGeralB.add(0);
 
-
-
                 for (Simbolo simbolo : tabeladesimbolos.Tabela.hashtable) {
                     if (simbolo != null) {
 
@@ -116,10 +117,9 @@ public class AnalisadorSemantico {
                                 break;
                             }
 
-                            System.out.println("Erro semântico");
+                            CaseError.add("Erro semântico, erro no token ("+(ControllerMain.TokenAtual)+") da linha ("+ControllerMain.LexicoLinha.get(ControllerMain.TokenAtual - 1)+")");
 
                         }
-
                     }
                 }
 
@@ -154,14 +154,16 @@ public class AnalisadorSemantico {
                 System.out.println("Adicionando o penultimo : "+penultimo);
 
             	if (tipo_identificador.equals("rótulo")) {
-                    if (Tabela.buscar(Table104) == null) {
+                    if (Tabela.buscar(Table104) != null) {
 
                         Simbolo Table104_2 = new Simbolo();
                         Table104_2 = Tabela.buscar(Table104);
 
                         int nivel = Integer.parseInt((Tabela.buscar(Table104)).getNivel()) ;
                         if (nivel == nivel_atual) {
-                            System.out.println("Erro semântico : Rótulo já declarado no mesmo nível");
+
+                            CaseError.add("Erro semântico, Rótulo já foi declarado no mesmo nível, erro no token ("+(ControllerMain.TokenAtual)+") da linha ("+ControllerMain.LexicoLinha.get(ControllerMain.TokenAtual - 1)+")");
+
                         }
                         else{
 
@@ -193,10 +195,8 @@ public class AnalisadorSemantico {
 
                     } else {
 
-                        //ControllerMain.Error.setText("Erro semântico, variável "+penultimo+" ja foi declarado, erro no token ("+(ControllerMain.TokenAtual+1)+") da linha ("+ControllerMain.LexicoLinha.get(ControllerMain.TokenAtual - 1)+")");
+                        CaseError.add("Erro semântico, variável "+penultimo+" ja foi declarado, erro no token ("+(ControllerMain.TokenAtual+1)+") da linha ("+ControllerMain.LexicoLinha.get(ControllerMain.TokenAtual - 1)+")");
 
-
-                        System.out.println("Erro semântico\nVariável \""+penultimo+"\" já foi declarada");
                     }
 
             	}
@@ -206,10 +206,13 @@ public class AnalisadorSemantico {
                     Table104.setCategoria("parâmetro");
                     Table104.setGeralA("");
 
-                    if (Tabela.buscar(Table104) == null) {
+                    if (Tabela.buscar(Table104) != null) {
                         int nivel = Integer.parseInt((Tabela.buscar(Table104)).getNivel()) ;
                         if (nivel == nivel_atual) {
-                            System.out.println("Erro semântico\nParâmetro já declarado no mesmo nível");
+
+                            CaseError.add("Erro semântico, Parâmetro já foi declarado no mesmo nível, erro no token ("+(ControllerMain.TokenAtual)+") da linha ("+ControllerMain.LexicoLinha.get(ControllerMain.TokenAtual - 1)+")");
+
+
                         } else {
 
                             Tabela.adiciona(Table104);
@@ -240,8 +243,10 @@ public class AnalisadorSemantico {
 
 
 
-                if (Tabela.buscar (Table105) == null) {
-                    System.out.println("Erro semântico = Constante já foi declarada");
+                if (Tabela.buscar (Table105) != null) {
+
+                    CaseError.add("Erro semântico, Constante já foi declarada, erro no token ("+(ControllerMain.TokenAtual)+") da linha ("+ControllerMain.LexicoLinha.get(ControllerMain.TokenAtual - 1)+")");
+
                 } else {
 
                     Tabela.adiciona(Table105);
@@ -327,7 +332,6 @@ public class AnalisadorSemantico {
 
                 parametros.add(np);
 
-
                 break;
             case 110:
 
@@ -351,8 +355,7 @@ public class AnalisadorSemantico {
                                 break;
                             }
 
-
-                            System.out.println("Erro semântico");
+                            CaseError.add("Erro semântico, erro no token ("+(ControllerMain.TokenAtual)+") da linha ("+ControllerMain.LexicoLinha.get(ControllerMain.TokenAtual - 1)+")");
 
                         }
 
@@ -390,7 +393,9 @@ public class AnalisadorSemantico {
                 if (Table113 != null) {
                     if (Table113.getCategoria().equals("rótulo")) {
                         if (!Table113.getNivel().equals(nivel_atual)) {
-                            System.out.println("Erro semântico: rótulo não está no escopo");
+
+                            CaseError.add("Erro semântico, rótulo não está no escopo, erro no token ("+(ControllerMain.TokenAtual)+") da linha ("+ControllerMain.LexicoLinha.get(ControllerMain.TokenAtual - 1)+")");
+
                         } else {
 
                             Simbolo Table113_2 = new Simbolo();
@@ -432,10 +437,14 @@ public class AnalisadorSemantico {
                         }
                     }
                     else
-                        System.out.println("Erro semântico: rótulo não está declarado");
+
+                        CaseError.add("Erro semântico, rótulo não está declarado, erro no token ("+(ControllerMain.TokenAtual)+") da linha ("+ControllerMain.LexicoLinha.get(ControllerMain.TokenAtual - 1)+")");
+
                 }
                 else {
-                    System.out.println("Erro semântico: rótulo não está declarado");
+
+                    CaseError.add("Erro semântico, rótulo não está declarado, erro no token ("+(ControllerMain.TokenAtual)+") da linha ("+ControllerMain.LexicoLinha.get(ControllerMain.TokenAtual - 1)+")");
+
                 }
 
             	break;
@@ -452,12 +461,16 @@ public class AnalisadorSemantico {
 
                 if (Table114 != null) {
                     if (!Table114.getCategoria().equals("variável")){
-                        System.out.println("Erro semântico: atribuição da parte esquerda inválida");
+
+                        CaseError.add("Erro semântico, atribuição da parte esquerda inválida, erro no token ("+(ControllerMain.TokenAtual)+") da linha ("+ControllerMain.LexicoLinha.get(ControllerMain.TokenAtual - 1)+")");
+
                     } else {
                         nome_atribuicao_esquerda = nomeIdentificador;
                     }
                 } else {
-                    System.out.println("Erro semântico: identificador \""+penultimo+"\" não encontrado na tabela de símbolos");
+
+                    CaseError.add("Erro semântico, identificador "+penultimo+" não foi encontrado na tabela de símbolos, erro no token ("+(ControllerMain.TokenAtual)+") da linha ("+ControllerMain.LexicoLinha.get(ControllerMain.TokenAtual - 1)+")");
+
                 }
 
 
@@ -495,7 +508,9 @@ public class AnalisadorSemantico {
                 Table116 = Tabela.buscar(Table116);
 
                 if (Table116 == null){
-                    System.out.println("Erro Semântico: procedure "+penultimo+" não foi declarado");
+
+                    CaseError.add("Erro semântico, procedure "+penultimo+" não foi declarado, erro no token ("+(ControllerMain.TokenAtual)+") da linha ("+ControllerMain.LexicoLinha.get(ControllerMain.TokenAtual - 1)+")");
+
                 }else{
                     if(Table116.getCategoria().equals("procedure")){
                         nomeProcedimento = penultimo;
@@ -513,11 +528,13 @@ public class AnalisadorSemantico {
 
                 if (Table117 == null){
 
-                    System.out.println("Erro semântico: Símbolo "+nomeProcedimento+" não declarado !!!");
+                    CaseError.add("Erro semântico, Símbolo "+nomeProcedimento+" não declarado, erro no token ("+(ControllerMain.TokenAtual)+") da linha ("+ControllerMain.LexicoLinha.get(ControllerMain.TokenAtual - 1)+")");
 
                 }else{
                     if(!Table117.getGeralB().equals((np+""))){
-                        System.out.println("Erro semântico: numero de parametros da procedure " + nomeProcedimento + " Não conferem com o número parâmetros passados");
+
+                        CaseError.add("Erro semântico, numero de parametros da procedure '  '" + nomeProcedimento + " Não conferem com o número parâmetros passados, erro no token ("+(ControllerMain.TokenAtual)+") da linha ("+ControllerMain.LexicoLinha.get(ControllerMain.TokenAtual - 1)+")");
+
                     }else{
 
                         MaquinaHipotetica.IncluirAI(AI, 25, 0, Integer.parseInt(Table117.getGeralA()));
@@ -541,10 +558,14 @@ public class AnalisadorSemantico {
                 Table119 = Tabela.buscar(Table119);
 
                 if(Table119 == null){
-                    System.out.println("Erro semântico: identificador \""+penultimo+"\" não está declarado");
+
+                    CaseError.add("Erro semântico, identificador "+penultimo+" não está declarado, erro no token ("+(ControllerMain.TokenAtual)+") da linha ("+ControllerMain.LexicoLinha.get(ControllerMain.TokenAtual - 1)+")");
+
                 }else {
                     if (Table119.getNivel().equals(nivel_atual)) {
-                        System.out.println("Erro semântico: o rótulo não está declarado no escopo do nível");
+
+                        CaseError.add("Erro semântico, o rótulo não está declarado no escopo do nível, erro no token ("+(ControllerMain.TokenAtual)+") da linha ("+ControllerMain.LexicoLinha.get(ControllerMain.TokenAtual - 1)+")");
+
                     } else {
 
                         int op2 = Integer.parseInt(Table119.getGeralB());
@@ -603,7 +624,7 @@ public class AnalisadorSemantico {
 
                 MaquinaHipotetica.AlterarAI(AI, ifs.get(ifs.size() - 1), 0, AI.LC + 1);
                 TABGeralA.set(ifs.get(ifs.size() - 1), 0);
-                TABGeralB.set(ifs.get(ifs.size() - 1), 0);
+                TABGeralB.set(ifs.get(ifs.size() - 1), AI.LC + 1);
 
                 ifs.remove(ifs.get(ifs.size() - 1));
 
@@ -684,7 +705,9 @@ public class AnalisadorSemantico {
 
                 if (Table129 == null)
                     {
-                        System.out.println("Erro semântico: identificador \""+penultimo+"\" não está declarado");
+
+                        CaseError.add("Erro semântico, identificador "+penultimo+" não está declarado, erro no token ("+(ControllerMain.TokenAtual)+") da linha ("+ControllerMain.LexicoLinha.get(ControllerMain.TokenAtual - 1)+")");
+
                     }else{
 
                         int d_nivel2 = nivel_atual - Integer.parseInt(Table129.getNivel());
@@ -705,7 +728,9 @@ public class AnalisadorSemantico {
 
                             }
                         else {
-                            System.out.println("Erro semântico: identificador \""+penultimo+"\" não é uma variável");
+
+                            CaseError.add("Erro semântico, identificador "+penultimo+" não é uma variável, erro no token ("+(ControllerMain.TokenAtual)+") da linha ("+ControllerMain.LexicoLinha.get(ControllerMain.TokenAtual - 1)+")");
+
                         }
                     }
 
@@ -714,7 +739,9 @@ public class AnalisadorSemantico {
 
                         if (Table129.getCategoria().equals("procedure") || (Table129.getCategoria().equals("rótulo")))
                         {
-                            System.out.println("Erro semântico: identificador \""+penultimo+"\" não é uma constante");
+
+                            CaseError.add("Erro semântico, identificador "+penultimo+" não é uma constante, erro no token ("+(ControllerMain.TokenAtual)+") da linha ("+ControllerMain.LexicoLinha.get(ControllerMain.TokenAtual - 1)+")");
+
                         }
                         else if (Table129.getCategoria().equals("constante")) {
 
@@ -881,7 +908,9 @@ public class AnalisadorSemantico {
                     forEndNome =  Table137.hashCode();
                 }
                 else {
-                    System.out.println("Erro semântico: variável \""+penultimo+"\" não declarada");
+
+                    CaseError.add("Erro semântico, variável "+penultimo+" não declarada, erro no token ("+(ControllerMain.TokenAtual)+") da linha ("+ControllerMain.LexicoLinha.get(ControllerMain.TokenAtual - 1)+")");
+
                 }
 
             	break;
@@ -1116,6 +1145,8 @@ public class AnalisadorSemantico {
 
 
         }
+
+
 
     public static void possuiParametro(boolean temParametro) {
         temParametro = temParametro;

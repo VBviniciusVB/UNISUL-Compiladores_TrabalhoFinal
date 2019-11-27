@@ -25,6 +25,7 @@ import sintatico.ParserConstants;
 import sintatico.Pilha;
 import tabeladesimbolos.Simbolo;
 import tabeladesimbolos.Tabela;
+import tabeladesimbolos.Teste;
 
 public class ControllerMain {
 
@@ -1026,6 +1027,7 @@ public class ControllerMain {
 
 	}
 
+
 	@FXML 
 	private void ButtonSintatico(MouseEvent event)
 	{
@@ -1054,6 +1056,10 @@ public class ControllerMain {
 
 			C++;
 
+			if (TokenAtual > 3){
+				AnalisadorSemantico.antepenultimo = Lexico.get(TokenAtual - 2);
+			}
+
 			AnalisadorSemantico.penultimo = AnalisadorSemantico.ultimo;
 			AnalisadorSemantico.ultimo = Lexico.get(TokenAtual)+"";
 
@@ -1077,7 +1083,7 @@ public class ControllerMain {
 
 					if(topoEntrada == Constants.DOLLAR){
 						//    	                        JOptionPane.showMessageDialog(null,"Analise finalizada");
-						Error.setText("Analise finalizada");
+						Error.setText("Analise sintática concluida");
 						break;
 					}
 					symbols.desempilhar();
@@ -1152,7 +1158,17 @@ public class ControllerMain {
 		AdicionaTabelaSemantico();
 
 		AdicionaTabelaIntermediaria();
-		
+
+		if (AnalisadorSemantico.CaseError.size() > 0){
+
+			Error.setText(AnalisadorSemantico.CaseError.get(0));
+
+		}else{
+
+			Error.setText("Analise sintática concluida");
+
+		}
+
 	}
 
 
@@ -1505,12 +1521,6 @@ public class ControllerMain {
 		public SimpleStringProperty bProperty() {
 			return b;
 		}
-
-	}
-
-	public static void MostrarErro(String Erro){
-
-		//ControllerMain.Error.setText(Erro);
 
 	}
 
