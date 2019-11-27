@@ -47,7 +47,13 @@ public class AnalisadorSemantico {
     //Inicializa Instruções e Literais da máquina hipotética
     public static AreaInstrucoes AI = new AreaInstrucoes();
     public static AreaLiterais AL = new AreaLiterais();
-    
+
+    public static void Interpreta (){
+
+        MaquinaHipotetica.Interpreta(AI,AL);
+
+    }
+
     public static void AcaoSemantica (int Numero){
 
         switch (Numero) {
@@ -81,6 +87,8 @@ public class AnalisadorSemantico {
 
                 //Limpar lista de símbolos
 
+                Tabela.clearHashtable();
+
                 // FALTOU LIMPAR OS VALORES QUE TEM NA TABELA DE SÍMBOLOS AKI
 
                 break;
@@ -88,17 +96,33 @@ public class AnalisadorSemantico {
 
                 MaquinaHipotetica.IncluirAI(AI, 26, 0, 0);
 
-//                for (int i = 0; i < this.tabelaSimbolos.getTabela().length; i++) {
-//                    if ((this.tabelaSimbolos.getTabela()[i][0] != null) && (this.tabelaSimbolos.getTabela()[i][1].equals("rótulo"))){
-//                        if (this.tabelaSimbolos.getTabela()[i][4].equals(""))
-//                            break;
-//
-//                        System.out.println("Erro semântico");
-//
-//                        break;
-//                    }
-//
-//                }
+                for (int i = 0; i < Tabela.hastableLEngth(); i++) {
+
+                    Simbolo Table101 = new Simbolo();
+                    Table101.setNome("");
+                    Table101.setCategoria("rótulo");
+                    Table101.setNivel(i+"");
+                    Table101.setGeralB("");
+
+                    Table101 = Tabela.buscar(Table101);
+
+                    if(Table101 != null){
+                        if (Table101.getCategoria().equals("rótulo")){
+
+                            if (Table101.getGeralB().equals("")){
+                                break;
+                            }
+
+                            System.out.println("Erro semântico");
+
+                        }
+                    }
+
+                }
+
+
+
+
 
                 break;
             case 102:
@@ -548,18 +572,18 @@ public class AnalisadorSemantico {
 
                 MaquinaHipotetica.IncluirAI(AI, 20, 0, 0);
 
-                whiles.add(AI.LC - 1);
+                whiles.add(AI.LC -1);
 
             	break;
             case 125:
+                whiles.remove(whiles.size() - 1);
 
                 MaquinaHipotetica.AlterarAI(AI, whiles.get(whiles.size() - 1), 0, AI.LC + 1);
 
-                whiles.remove(whiles.size());
+                whiles.remove(whiles.size() - 1);
 
                 MaquinaHipotetica.IncluirAI(AI, 19, 0, whiles.size() - 1);
 
-                whiles.remove(whiles.size());
 
             	break;
             case 126:

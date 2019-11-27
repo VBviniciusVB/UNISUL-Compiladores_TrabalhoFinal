@@ -1137,6 +1137,8 @@ public class ControllerMain {
 		//
 		//
 
+
+
 		AdicionaTabelaSemantico();
 
 		AdicionaTabelaIntermediaria();
@@ -1144,6 +1146,13 @@ public class ControllerMain {
 	}
 
 
+	@FXML
+	private  void  ButtonSemantico () {
+
+		AnalisadorSemantico.Interpreta();
+
+
+	}
 
 	@FXML
 	private void AdicionaTabelaSemantico () {

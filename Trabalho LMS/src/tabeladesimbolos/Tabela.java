@@ -18,6 +18,10 @@ public class Tabela {
         return hashVal;
     }
 
+    public static int hastableLEngth(){
+        return hashtable.length;
+    }
+
     public void mostraConteudoTabela() {
         for (Simbolo simbolo : this.hashtable) {
             if (simbolo != null) {
@@ -43,6 +47,12 @@ public class Tabela {
             }
             auxSimbolo.setProximo(simbolo);
         }
+    }
+
+    public static Simbolo[] clearHashtable() {
+        Simbolo[] emptyHashytable = new Simbolo[tableSize];
+        hashtable = emptyHashytable;
+        return hashtable;
     }
 
     public boolean remover(Simbolo simbolo) {
