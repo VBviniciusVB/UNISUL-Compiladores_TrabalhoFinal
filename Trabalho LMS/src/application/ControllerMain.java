@@ -24,8 +24,6 @@ import sintatico.Constants;
 import sintatico.ParserConstants;
 import sintatico.Pilha;
 import tabeladesimbolos.Simbolo;
-import tabeladesimbolos.Tabela;
-import tabeladesimbolos.Teste;
 
 public class ControllerMain {
 
@@ -872,6 +870,12 @@ public class ControllerMain {
 
 				}
 
+
+
+
+
+
+
 				if ( '(' == Codigo.charAt(i) && '*' == Codigo.charAt(i+1)) {
 
 					achou = true;
@@ -918,10 +922,11 @@ public class ControllerMain {
 
 						}
 
-					}            		
+					}
 
 					Token = Token + "*)";            		
 					ignorar = Atual - i + 1;
+
 
 					//Lexico.add(Token);
 					//LexicoID.add(0);
@@ -929,7 +934,9 @@ public class ControllerMain {
 
 
 					// Comentários
-				}       	
+				}
+
+
 
 				if (achou == false) {
 
@@ -1052,16 +1059,18 @@ public class ControllerMain {
 		C = 0;
 		TokenAtual = 0;
 
+		boolean AchouErro = false;
+
 		do {
 
 			C++;
 
 			if (TokenAtual > 3){
-				AnalisadorSemantico.antepenultimo = Lexico.get(TokenAtual - 2);
+				AnalisadorSemantico.AntePenultimo = Lexico.get(TokenAtual - 2);
 			}
 
-			AnalisadorSemantico.penultimo = AnalisadorSemantico.ultimo;
-			AnalisadorSemantico.ultimo = Lexico.get(TokenAtual)+"";
+			AnalisadorSemantico.Penultimo = AnalisadorSemantico.Ultimo;
+			AnalisadorSemantico.Ultimo = Lexico.get(TokenAtual)+"";
 
 			//pega os primeiros simbolos das pilhas
 			Integer topoSimbolos = symbols.exibeUltimoValor();
@@ -1084,6 +1093,7 @@ public class ControllerMain {
 					if(topoEntrada == Constants.DOLLAR){
 						//    	                        JOptionPane.showMessageDialog(null,"Analise finalizada");
 						Error.setText("Analise sintática concluida");
+
 						break;
 					}
 					symbols.desempilhar();
@@ -1097,7 +1107,7 @@ public class ControllerMain {
 				}else{
 
 					Error.setText("Token inesperado, erro no token ("+TokenAtual+") da linha ("+LexicoLinha.get(TokenAtual - 1)+")");
-
+					AchouErro = true;
 					System.out.println(ParserConstants.PARSER_ERROR[topoSimbolos]);
 					break;
 				}
@@ -1131,7 +1141,7 @@ public class ControllerMain {
 					}else {
 
 						Error.setText("Não encontrado na matriz de parse, erro no token ("+(TokenAtual)+") da linha ("+LexicoLinha.get(TokenAtual - 1)+")");
-
+						AchouErro = true;
 						System.out.println("Error : " + topoSimbolos + " - " + topoEntrada);
 
 
@@ -1161,13 +1171,15 @@ public class ControllerMain {
 
 		if (AnalisadorSemantico.CaseError.size() > 0){
 
-			Error.setText(AnalisadorSemantico.CaseError.get(0));
+			Error.setText(Error.getText() +"\n \n"+ AnalisadorSemantico.CaseError.get(0));
 
 		}else{
 
-			Error.setText("Analise sintática concluida");
+			Error.setText(Error.getText() +"\n \n"+"Analise semântica concluida");
 
 		}
+
+
 
 	}
 

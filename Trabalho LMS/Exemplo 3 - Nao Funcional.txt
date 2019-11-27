@@ -1,9 +1,6 @@
 PROGRAM Exemplo3NaoFuncional;
 
-(*O VAR abaixo foi fechado sem o x ou o y *)
-
-    VAR ;
-	x, y :INTEGER;
+    VAR x, y :INTEGER;
     BEGIN
 	x:= 5;
 	y:= 3;
@@ -11,6 +8,6 @@ PROGRAM Exemplo3NaoFuncional;
             WRITELN("x: ", y);
         END ELSE BEGIN
             WRITELN("y: ", x);
-    END. (* Aki não foi adicionado o ponto e vírgula *)
+    END. (* Aki nao foi adicionado o ponto e virgula *)
 END.
 (* E eu esqueci de fechar o comentário

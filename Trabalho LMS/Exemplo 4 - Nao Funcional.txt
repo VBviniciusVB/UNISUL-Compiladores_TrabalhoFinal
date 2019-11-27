@@ -7,7 +7,7 @@ PROGRAM Exemplo4NaoFuncional;
     BEGIN
         A := 7;
 	B := 9;
-	C := 2;
+	C := 1;
         WHILE C < 3 DO 
 
 	BEGIN

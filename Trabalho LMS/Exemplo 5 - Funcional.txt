@@ -10,9 +10,9 @@ BEGIN
    WRITELN(D,A);
 
    IF B > C THEN BEGIN
-      WRITELN("Valor de B + 2 é : ", B);
+      WRITELN("Valor de B + 2 e : ", B);
    END ELSE BEGIN
-      WRITELN("Valor de C é : ", C);
+      WRITELN("Valor de C e : ", C);
    END;
 
 END.
